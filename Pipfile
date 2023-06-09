@@ -1,0 +1,18 @@
+[[source]]
+url = 'https://pypi.python.org/simple'
+verify_ssl = true
+name = 'pypi'
+
+[requires]
+python_version = '3.11'
+
+[packages]
+google-cloud-storage='==2.9.0'
+google-cloud-speech='==2.20.0'
+python-telegram-bot='==20.3'
+
+[dev-packages]
+pytest='==7.2.1'
+parameterized="==0.8.1"
+
+[scripts]
