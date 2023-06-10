@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+  release:
+    types: [published]
 
 concurrency:
   group: ci-deployment-${{ github.ref }}
@@ -45,7 +47,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     needs: build
-    environment: staging
+    environment: ${{ github.ref_type == 'tag' && 'prod' || 'staging' }}
 
     steps:
       - name: Check out repository code
@@ -63,11 +65,9 @@ jobs:
       - name: 'Deploy App'
         env:
           TF_STATE_APP_BUCKET: ${{ secrets.TF_STATE_APP_BUCKET }}
-          TF_VAR_env_name: staging
+          TF_VAR_env_name: ${{ github.ref_type == 'tag' && 'prod' || 'staging' }}
           TF_VAR_gcp_sa_credentials: ${{ steps.auth.outputs.credentials_file_path  }}
           TF_VAR_gcp_project_name: ${{ secrets.TF_VAR_gcp_project_name }}
           TF_VAR_telegram_token: ${{ secrets.TF_VAR_telegram_token }}
           TF_VAR_bot_image: ${{ env.IMAGE_TAG }}
-        run: |
-          env
-          make app-tf-init app-tf-plan app-tf-apply
+        run: make app-tf-init app-tf-plan app-tf-apply

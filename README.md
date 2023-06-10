@@ -25,6 +25,7 @@ touch .env
 * https://registry.terraform.io/providers/integrations/github/latest/docs
 * https://registry.terraform.io/providers/hashicorp/random/latest/docs
 * https://cloud.google.com/iam/docs/understanding-roles
+* https://docs.github.com/en/actions/learn-github-actions/variables
 
 # TODO
 Инициализация ссылки. А нужно ли она для передачи в cloud run?
