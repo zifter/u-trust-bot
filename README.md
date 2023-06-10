@@ -9,6 +9,11 @@ Setup development access
 gcloud auth application-default login
 ```
 
+Put here everything for deployment
+```commandline
+touch .env
+```
+
 ### Project
 * Create project
 * Create service account for terraform (Project Editor + Service Usage Admin)

@@ -105,10 +105,28 @@ resource "google_storage_bucket" "tf_state_dev" {
   }
 }
 
+resource "github_actions_secret" "gcp_project_name" {
+  repository       = "${var.github_repository}"
+  secret_name      = "GCP_PROJECT_NAME"
+  plaintext_value  = "${var.gcp_project_name}"
+}
+
 resource "github_actions_secret" "deployer_google_credentials" {
   repository       = "${var.github_repository}"
   secret_name      = "GOOGLE_CREDENTIALS"
   plaintext_value  = google_service_account_key.deployer_key.private_key
+}
+
+resource "github_actions_secret" "artifact_registry_url" {
+  repository       = "${var.github_repository}"
+  secret_name      = "GCP_ARTIFACT_REGISTRY"
+  plaintext_value  = "${local.artifact_registry_url}"
+}
+
+resource "github_actions_secret" "tf_state_bucket_dev" {
+  repository       = "${var.github_repository}"
+  secret_name      = "TF_STATE_APP_BUCKET_DEV"
+  plaintext_value  = "${google_storage_bucket.tf_state_dev.name}"
 }
 
 locals {
