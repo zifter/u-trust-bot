@@ -8,10 +8,6 @@ terraform {
       source  = "integrations/github"
       version = "5.26.0"
     }
-    curl = {
-      source = "anschoewe/curl"
-      version = "1.0.2"
-    }
     random = {
       source = "hashicorp/random"
       version = "3.5.1"
@@ -28,5 +24,3 @@ provider "google" {
   region  = var.gcp_region
   zone    = var.gcp_zone
 }
-
-provider "curl" {}

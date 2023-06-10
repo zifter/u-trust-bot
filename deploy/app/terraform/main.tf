@@ -1,3 +1,10 @@
+locals {
+  cloud_run_name = "u-trust-bot-${var.env_name}"
+  # TODO
+  # https://github.com/hashicorp/terraform-provider-google/issues/9277
+  service_url = "https://${local.cloud_run_name}-5svpu4bngq-lm.a.run.app"
+}
+
 resource "google_storage_bucket" "speech2text_workspace" {
   provider = google-beta
 
@@ -26,12 +33,19 @@ resource "random_password" "secret_token" {
 resource "google_cloud_run_service" "run_bot" {
   provider = google-beta
 
-  name = "u-trust-bot"
+  name = "${local.cloud_run_name}"
 
   project = var.gcp_project_name
   location = var.gcp_region
 
   template {
+    metadata {
+      annotations = {
+        "autoscaling.knative.dev/minScale"      = "0"
+        "autoscaling.knative.dev/maxScale"      = "3"
+      }
+    }
+
     spec {
       containers {
         image = "${var.bot_image}"
@@ -45,19 +59,13 @@ resource "google_cloud_run_service" "run_bot" {
         }
         env {
           name = "UTRUST_URL"
-          value = "${var.service_url}"
+          value = "${local.service_url}"
         }
         env {
           name = "UTRUST_SPEECH_TO_TEXT_WORKSPACE"
           value = "${google_storage_bucket.speech2text_workspace.name}"
         }
       }
-    }
-  }
-
-  metadata {
-    annotations = {
-      "autoscaling.knative.dev/max-scale" = "2"
     }
   }
 
@@ -76,15 +84,4 @@ resource "google_cloud_run_service_iam_member" "run_bot_allow_all_users" {
   location = google_cloud_run_service.run_bot.location
   role     = "roles/run.invoker"
   member   = "allUsers"
-}
-
-locals {
-  service_url = google_cloud_run_service.run_bot.status[0].url
-  set_bot_url_webhook = "https://api.telegram.org/bot${var.telegram_token}/setWebhook?url=${local.service_url}"
-}
-
-# Set url webhook for telegram
-data "curl" "set_bot_webhook" {
-  http_method = "GET"
-  uri = "${local.set_bot_url_webhook}"
 }

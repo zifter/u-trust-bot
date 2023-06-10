@@ -34,17 +34,3 @@ resource "github_actions_environment_secret" "tf_state_bucket" {
   secret_name      = "TF_STATE_APP_BUCKET"
   plaintext_value  = "${google_storage_bucket.tf_state_bucket.name}"
 }
-
-resource "github_actions_environment_secret" "telegram_token" {
-  repository       = data.github_repository.repo.name
-  environment      = github_repository_environment.repo_env.environment
-
-  secret_name      = "TF_VAR_telegram_token"
-}
-
-resource "github_actions_environment_secret" "service_url" {
-  repository       = data.github_repository.repo.name
-  environment      = github_repository_environment.repo_env.environment
-
-  secret_name      = "TF_VAR_service_url"
-}

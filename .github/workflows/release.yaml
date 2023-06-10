@@ -67,7 +67,6 @@ jobs:
           TF_VAR_gcp_sa_credentials: ${{ steps.auth.outputs.credentials_file_path  }}
           TF_VAR_gcp_project_name: ${{ secrets.TF_VAR_gcp_project_name }}
           TF_VAR_telegram_token: ${{ secrets.TF_VAR_telegram_token }}
-          TF_VAR_service_url: ${{ secrets.TF_VAR_service_url }}
           TF_VAR_bot_image: ${{ env.IMAGE_TAG }}
         run: |
           env

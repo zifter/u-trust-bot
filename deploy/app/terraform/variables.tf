@@ -18,7 +18,6 @@ variable "gcp_zone" {
 
 variable "env_name" {}
 variable "telegram_token" {}
-variable "service_url" {}
 
 variable "bot_image" {}
 
