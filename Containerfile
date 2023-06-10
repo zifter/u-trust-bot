@@ -10,14 +10,15 @@ RUN pip install --user --upgrade --no-cache-dir pip==22.3.1 && \
     pip install --user --no-cache-dir pipenv==2022.10.25
 
 # install python packages
-COPY Pipfile Pipfile
-COPY Pipfile.lock Pipfile.lock
+COPY Pipfile Pipfile.lock .
 
-RUN pipenv install --dev --deploy --ignore-pipfile
+RUN pipenv requirements --dev > requirements.txt
 
 # copy to a fresh image for reduced size
 FROM python:3.11.4-slim-buster
-COPY --from=build /root/.local /root/.local
+
+WORKDIR /app
+COPY --from=build /app/requirements.txt /app/requirements.txt
 
 # set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -25,11 +26,10 @@ ENV PYTHONUNBUFFERED 1
 ENV PATH=/root/.local/bin:$PATH
 
 # copy project
-WORKDIR /app
-COPY src src
-COPY Pipfile Pipfile
-COPY Pipfile.lock Pipfile.lock
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
 
 WORKDIR /app/src
 
-ENTRYPOINT ["pipenv", "run"]
+CMD ["python", "main.py"]

@@ -45,6 +45,14 @@ class TelegramFacade:
     def run_polling(self):
         self.application.run_polling()
 
+    def run_webhook(self, port, secret_token, url):
+        self.application.run_webhook(
+            listen="0.0.0.0",
+            port=port,
+            secret_token=secret_token,
+            webhook_url=url
+        )
+
     async def receive(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         logger.info(f'Text {update.message}')
 

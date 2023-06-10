@@ -15,8 +15,11 @@ class UTrustBot:
 
         self.tg.add_message_processor(self.receive_message)
 
-    def process(self):
+    def run_polling(self):
         self.tg.run_polling()
+
+    def run_webhook(self, *args):
+        self.tg.run_webhook(*args)
 
     async def receive_message(self, msg: Message):
         dest = self.tmp_dir / rand_string_id(prefix='audio-', suffix='.ogg')
