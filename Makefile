@@ -2,7 +2,6 @@ include .env
 
 .EXPORT_ALL_VARIABLES:
 
-
 dep-up:
 	pipenv update --dev
 	pipenv clean
@@ -10,6 +9,9 @@ dep-up:
 
 #######
 # IMAGE
+podman-login:
+	gcloud auth print-access-token --quiet | podman login -u oauth2accesstoken --password-stdin ${GCP_ARTIFACT_REGISTRY}
+
 image-build: IMAGE_TAG := test
 image-build:
 	podman build . -t ${IMAGE_TAG}
@@ -40,6 +42,9 @@ infra-tf-plan:
 infra-tf-apply:
 	terraform -chdir=deploy/infra/terraform apply tfplan
 
+infra-tf-destroy:
+	terraform -chdir=deploy/infra/terraform destroy
+
 #######
 # APP
 app-tf-init:
@@ -49,7 +54,10 @@ app-tf-init-upgrade:
 	terraform -chdir=deploy/app/terraform init -upgrade -backend-config="bucket=${TF_STATE_APP_BUCKET}"
 
 app-tf-plan:
-	terraform -chdir=deploy/app/terraform plan -var="gcp_sa_credentials=${TF_VAR_SERVICE_ACCOUNT}" -out=tfplan
+	terraform -chdir=deploy/app/terraform plan -out=tfplan
 
 app-tf-apply:
 	terraform -chdir=deploy/app/terraform apply tfplan
+
+app-tf-destroy:
+	terraform -chdir=deploy/app/terraform destroy

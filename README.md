@@ -16,7 +16,7 @@ touch .env
 
 ### Project
 * Create project
-* Create service account for terraform (Project Editor + Service Usage Admin)
+* Create service account for terraform (Project Editor + Service Usage Admin, Project IAM Admin)
 * Create bucket fot tf-state
 
 
@@ -24,10 +24,9 @@ touch .env
 * https://registry.terraform.io/providers/hashicorp/google/latest/docs
 * https://registry.terraform.io/providers/integrations/github/latest/docs
 * https://registry.terraform.io/providers/hashicorp/random/latest/docs
-* 
+* https://cloud.google.com/iam/docs/understanding-roles
+
 # TODO
-Инициализация ссылки
+Инициализация ссылки. А нужно ли она для передачи в cloud run?
 * Перенести секреты в Secret Manager
 Пайплайн для тестов
-Установить лимит на стоимость в 
-сократить количество реплик до 1

@@ -57,6 +57,32 @@ resource "google_service_account" "deployer" {
   display_name = "Deployer Service Account"
 }
 
+resource "google_project_iam_binding" "iam_deployer_bucket_admin" {
+  project = "${var.gcp_project_name}"
+  role    = "roles/storage.admin"
+
+  members = [
+   "serviceAccount:${google_service_account.deployer.email}",
+  ]
+}
+
+resource "google_project_iam_binding" "iam_deployer_cloud_run_admin" {
+  project = "${var.gcp_project_name}"
+  role    = "roles/run.developer"
+
+  members = [
+   "serviceAccount:${google_service_account.deployer.email}",
+  ]
+}
+resource "google_project_iam_binding" "iam_deployer_servie_account_user" {
+  project = "${var.gcp_project_name}"
+  role    = "roles/iam.serviceAccountUser"
+
+  members = [
+   "serviceAccount:${google_service_account.deployer.email}",
+  ]
+}
+
 resource "google_service_account_key" "deployer_key" {
   service_account_id = google_service_account.deployer.name
 
@@ -65,7 +91,7 @@ resource "google_service_account_key" "deployer_key" {
   ]
 }
 
-resource "google_artifact_registry_repository_iam_member" "deployer_iam" {
+resource "google_artifact_registry_repository_iam_member" "deployer_iam_artifact_registry" {
   provider = google-beta
 
   project = var.gcp_project_name
@@ -75,39 +101,9 @@ resource "google_artifact_registry_repository_iam_member" "deployer_iam" {
   member = "serviceAccount:${google_service_account.deployer.email}"
 }
 
-resource "google_storage_bucket" "tf_state_prod" {
-  provider = google-beta
-
-  project       = var.gcp_project_name
-  name          = var.tf_state_prod_bucket
-  location      = "EU"
-  force_destroy = true
-
-  uniform_bucket_level_access = true
-
-  labels     = {
-    managed_by = "terraform"
-  }
-}
-
-resource "google_storage_bucket" "tf_state_dev" {
-  provider = google-beta
-
-  project       = var.gcp_project_name
-  name          = var.tf_state_dev_bucket
-  location      = "EU"
-  force_destroy = true
-
-  uniform_bucket_level_access = true
-
-  labels     = {
-    managed_by = "terraform"
-  }
-}
-
 resource "github_actions_secret" "gcp_project_name" {
   repository       = "${var.github_repository}"
-  secret_name      = "GCP_PROJECT_NAME"
+  secret_name      = "TF_VAR_gcp_project_name"
   plaintext_value  = "${var.gcp_project_name}"
 }
 
@@ -123,12 +119,34 @@ resource "github_actions_secret" "artifact_registry_url" {
   plaintext_value  = "${local.artifact_registry_url}"
 }
 
-resource "github_actions_secret" "tf_state_bucket_dev" {
-  repository       = "${var.github_repository}"
-  secret_name      = "TF_STATE_APP_BUCKET_DEV"
-  plaintext_value  = "${google_storage_bucket.tf_state_dev.name}"
-}
-
 locals {
   artifact_registry_url = "${var.gcp_region}-docker.pkg.dev/${var.gcp_project_name}/${google_artifact_registry_repository.artifact_registry.repository_id}"
+}
+
+module "environment_staging" {
+  source = "./modules/app_env"
+
+  env_name="staging"
+
+  github_owner="${var.github_owner}"
+  github_token="${var.github_token}"
+  github_repository="${var.github_repository}"
+
+  gcp_project_name="${var.gcp_project_name}"
+  gcp_region="${var.gcp_region}"
+  gcp_zone="${var.gcp_zone}"
+}
+
+module "environment_prod" {
+  source = "./modules/app_env"
+
+  env_name="prod"
+
+  github_owner="${var.github_owner}"
+  github_token="${var.github_token}"
+  github_repository="${var.github_repository}"
+
+  gcp_project_name="${var.gcp_project_name}"
+  gcp_region="${var.gcp_region}"
+  gcp_zone="${var.gcp_zone}"
 }

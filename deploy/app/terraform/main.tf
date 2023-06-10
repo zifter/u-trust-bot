@@ -2,7 +2,7 @@ resource "google_storage_bucket" "speech2text_workspace" {
   provider = google-beta
 
   project = var.gcp_project_name
-  name          = "${var.global_prefix}-speech2text-workspace-${var.env_name}"
+  name          = "${var.gcp_project_name}-speech2text-workspace-${var.env_name}"
   location      = "EU"
   force_destroy = true
 
@@ -14,7 +14,8 @@ resource "google_storage_bucket" "speech2text_workspace" {
 }
 
 resource "random_password" "secret_token" {
-  length = 16
+  length = 32
+  special = false
   keepers = {
     # Generate a new id each time we switch to a new Telegram Token
     telegram_token = var.telegram_token
@@ -40,7 +41,7 @@ resource "google_cloud_run_service" "run_bot" {
         }
         env {
           name = "UTRUST_SECRET_TOKEN"
-          value = "${random_password.secret_token.id}"
+          value = "${random_password.secret_token.result}"
         }
         env {
           name = "UTRUST_URL"

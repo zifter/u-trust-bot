@@ -1,6 +1,6 @@
-variable "gcp_sa_credentials" {
+variable "env_name" {
   type        = string
-  description = "Service Account key file"
+  description = "Environment Name"
 }
 
 variable "github_owner" {

@@ -9,11 +9,13 @@ concurrency:
   group: ci-deployment-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  IMAGE_TAG: ${{ secrets.GCP_ARTIFACT_REGISTRY }}/me/bot:${{ github.ref_name }}-${{ github.sha }}
+
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
     timeout-minutes: 5
-
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
@@ -24,14 +26,33 @@ jobs:
       - name: Build Docker Image
         id: build
         run: |
-          export IMAGE_TAG=${{ secrets.GCP_ARTIFACT_REGISTRY }}/me/bot:${GITHUB_REF##*/}
           make image-build IMAGE_TAG=${IMAGE_TAG}
-          echo "image_tag=${IMAGE_TAG}" >> "$GITHUB_OUTPUT"
 
-      - name: Build Docker Image
-        env:
-          IMAGE_TAG: ${{ steps.build.outputs.image_tag }}
+      - name: Test Docker Image
         run: make image-test IMAGE_TAG=${IMAGE_TAG}
+
+      - name: 'Authenticate to Google Cloud'
+        uses: 'google-github-actions/auth@v1'
+        with:
+          credentials_json: '${{ secrets.GOOGLE_CREDENTIALS }}'
+
+      - name: Push Docker Image
+        run: |
+          make podman-login GCP_ARTIFACT_REGISTRY=${{ secrets.GCP_ARTIFACT_REGISTRY }}
+          make image-push IMAGE_TAG=${IMAGE_TAG}
+
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: build
+    environment: staging
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+
+      - name: 'Prepare Local Workspace'
+        run: touch .env
 
       - name: 'Authenticate to Google Cloud'
         id: 'auth'
@@ -41,11 +62,13 @@ jobs:
 
       - name: 'Deploy App'
         env:
-          TF_STATE_APP_BUCKET: ${{ secrets.TF_STATE_APP_BUCKET_DEV }}
-          TF_VAR_env_name: dev # TODO
+          TF_STATE_APP_BUCKET: ${{ secrets.TF_STATE_APP_BUCKET }}
+          TF_VAR_env_name: staging
           TF_VAR_gcp_sa_credentials: ${{ steps.auth.outputs.credentials_file_path  }}
-          TF_VAR_gcp_project_name: ${{ secrets.GCP_PROJECT_NAME }}
-          TF_VAR_telegram_token: ${{ secrets.TELEGRAM_TOKEN }}
-          TF_VAR_service_url: ${{ secrets.APP_SERVICE_URL }}
-          TF_VAR_bot_image: ${{ steps.build.outputs.image }}
-        run: make app-tf-init app-tf-plan app-tf-apply
+          TF_VAR_gcp_project_name: ${{ secrets.TF_VAR_gcp_project_name }}
+          TF_VAR_telegram_token: ${{ secrets.TF_VAR_telegram_token }}
+          TF_VAR_service_url: ${{ secrets.TF_VAR_service_url }}
+          TF_VAR_bot_image: ${{ env.IMAGE_TAG }}
+        run: |
+          env
+          make app-tf-init app-tf-plan app-tf-apply
