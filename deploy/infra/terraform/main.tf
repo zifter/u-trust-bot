@@ -68,7 +68,7 @@ resource "google_project_iam_binding" "iam_deployer_bucket_admin" {
 
 resource "google_project_iam_binding" "iam_deployer_cloud_run_admin" {
   project = "${var.gcp_project_name}"
-  role    = "roles/run.developer"
+  role    = "roles/run.admin"
 
   members = [
    "serviceAccount:${google_service_account.deployer.email}",
