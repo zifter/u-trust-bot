@@ -35,16 +35,6 @@ resource "google_storage_bucket" "speech2text_workspace" {
   }
 }
 
-resource "google_firestore_database" "db" {
-  project       = var.gcp_project_name
-  name          = local.firestore_database
-  location_id   = var.gcp_region
-  type          = "DATASTORE_MODE"
-
-  app_engine_integration_mode = "DISABLED"
-  concurrency_mode            = "OPTIMISTIC"
-}
-
 resource "random_password" "secret_token" {
   length = 32
   special = false
@@ -89,10 +79,6 @@ resource "google_cloud_run_service" "run_bot" {
         env {
           name = "UTRUST_SPEECH_TO_TEXT_WORKSPACE"
           value = "${google_storage_bucket.speech2text_workspace.name}"
-        }
-        env {
-          name = "UTRUST_DATASTORE_DB"
-          value = "${google_firestore_database.db.name}"
         }
       }
     }

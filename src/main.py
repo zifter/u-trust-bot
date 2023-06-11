@@ -5,6 +5,7 @@ import os
 from argparse import ArgumentParser
 
 from external.gcp import GCPFacade
+from external.storage import Storage
 from external.tg import TelegramFacade
 from utrust.bot import UTrustBot
 
@@ -22,7 +23,6 @@ def get_args():
     parser.add_argument("--language", default=os.environ.get("UTRUST_LANGUAGE", "ru-RU"), type=str)
 
     parser.add_argument("--speech-to-text-workspace", default=os.environ.get('UTRUST_SPEECH_TO_TEXT_WORKSPACE', None))
-    parser.add_argument("--datastore-db", default=os.environ.get('UTRUST_DATASTORE_DB', None))
 
     return parser.parse_args()
 
@@ -33,12 +33,12 @@ def main(webhook: bool,
          port: int,
          secret_token: str,
          language: str,
-         url: str,
-         datastore_db: str):
+         url: str):
     gcp = GCPFacade(speech_to_text_workspace, language)
     tg = TelegramFacade(telegram_token)
 
-    bot = UTrustBot(gcp, tg,)
+    db = Storage()
+    bot = UTrustBot(gcp, tg, db)
     if webhook:
         bot.run_webhook(port, secret_token, url)
     else:

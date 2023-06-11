@@ -12,6 +12,10 @@ class Message:
         self.update = update
         self.context = context
 
+    @property
+    def telegram_id(self):
+        return self.update.message.from_user.id
+
     async def save_voice_file(self, destination):
         new_file = await self.context.bot.get_file(self.update.message.voice.file_id)
         await new_file.download_to_drive(destination)

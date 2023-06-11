@@ -9,6 +9,8 @@ python_version = '3.11'
 [packages]
 google-cloud-storage='==2.9.0'
 google-cloud-speech='==2.20.0'
+google-cloud-datastore='==2.15.2'
+google-cloud-ndb='==2.1.1'
 python-telegram-bot={extras=["webhooks"], version='==20.3'}
 
 [dev-packages]
