@@ -22,6 +22,8 @@ def get_args():
     parser.add_argument("--language", default=os.environ.get("UTRUST_LANGUAGE", "ru-RU"), type=str)
 
     parser.add_argument("--speech-to-text-workspace", default=os.environ.get('UTRUST_SPEECH_TO_TEXT_WORKSPACE', None))
+    parser.add_argument("--datastore-db", default=os.environ.get('UTRUST_DATASTORE_DB', None))
+
     return parser.parse_args()
 
 

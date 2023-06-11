@@ -31,6 +31,14 @@ resource "google_project_service" "iam_api" {
   disable_on_destroy = false
 }
 
+resource "google_project_service" "firestore" {
+  provider = google-beta
+
+  project = var.gcp_project_name
+  service = "firestore.googleapis.com"
+  disable_on_destroy = false
+}
+
 resource "google_artifact_registry_repository" "artifact_registry" {
   provider = google-beta
 

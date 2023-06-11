@@ -1,4 +1,5 @@
 locals {
+  firestore_database = "u-trust-bot-db-${var.env_name}"
   cloud_run_name = "u-trust-bot-${var.env_name}"
 
   # TODO
@@ -6,6 +7,7 @@ locals {
   project_hash = "5svpu4bngq"
   region_hash = "lm"
   calculated_service_url = "https://${local.cloud_run_name}-${local.project_hash}-${local.region_hash}.a.run.app"
+
   service_url = "${var.service_url != "" ? var.service_url : local.calculated_service_url}"
 }
 
@@ -28,9 +30,18 @@ resource "google_storage_bucket" "speech2text_workspace" {
     }
   }
 
-  labels     = {
+  labels = {
     managed_by = "terraform"
   }
+}
+
+resource "google_firestore_database" "db" {
+  project       = var.gcp_project_name
+  name          = local.firestore_database
+  location_id   = var.gcp_region
+  type          = "DATASTORE_MODE"
+  app_engine_integration_mode = "DISABLED"
+  concurrency_mode            = "OPTIMISTIC"
 }
 
 resource "random_password" "secret_token" {
@@ -77,6 +88,10 @@ resource "google_cloud_run_service" "run_bot" {
         env {
           name = "UTRUST_SPEECH_TO_TEXT_WORKSPACE"
           value = "${google_storage_bucket.speech2text_workspace.name}"
+        }
+        env {
+          name = "UTRUST_DATASTORE_DB"
+          value = "${google_firestore_database.db.name}"
         }
       }
     }
