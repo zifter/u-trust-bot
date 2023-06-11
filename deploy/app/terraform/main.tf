@@ -19,6 +19,15 @@ resource "google_storage_bucket" "speech2text_workspace" {
 
   uniform_bucket_level_access = true
 
+  lifecycle_rule {
+    condition {
+      age = 1
+    }
+    action {
+      type = "Delete"
+    }
+  }
+
   labels     = {
     managed_by = "terraform"
   }
