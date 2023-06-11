@@ -4,8 +4,6 @@ from typing import List
 from telegram import Update
 from telegram.ext import ContextTypes, Application, MessageHandler, filters
 
-from utils.fs import TEST_DATA_DIR
-
 logger = logging.getLogger('telegram')
 
 
@@ -30,14 +28,7 @@ class TelegramFacade:
     def add_message_processor(self, processor):
         self._message_processor.append(processor)
 
-    def get_audio_message_file(self):
-        logger.info(f'get audio message file')
-
-        result_file = TEST_DATA_DIR / 'audio' / 'audio_call_mama.ogg'
-        logger.info(f'save to {result_file}')
-        return result_file
-
-    async def send_text_message(self, msg: Message, text: str):
+    async def reply_on_message(self, msg: Message, text: str):
         logger.info(f'Send message "{text}"')
 
         await msg.update.message.reply_text(text)

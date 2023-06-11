@@ -13,7 +13,7 @@ class UTrustBot:
 
         self.tmp_dir = Path(tempfile.mkdtemp(suffix='tg-audio-files'))
 
-        self.tg.add_message_processor(self.receive_message)
+        self.tg.add_message_processor(self.process_message)
 
     def run_polling(self):
         self.tg.run_polling()
@@ -21,10 +21,10 @@ class UTrustBot:
     def run_webhook(self, *args):
         self.tg.run_webhook(*args)
 
-    async def receive_message(self, msg: Message):
-        dest = self.tmp_dir / rand_string_id(prefix='audio-', suffix='.ogg')
+    async def process_message(self, msg: Message):
+        audio_file_path = self.tmp_dir / rand_string_id(prefix='audio-', suffix='.ogg')
 
-        audio_file = await msg.save_voice_file(dest)
-        url = self.gcp.upload_to_bucket(audio_file)
-        text = self.gcp.speech_to_text(url)
-        await self.tg.send_text_message(msg, text)
+        audio_file = await msg.save_voice_file(audio_file_path)
+        audio_url = self.gcp.upload_to_bucket(audio_file)
+        text = self.gcp.speech_to_text(audio_url)
+        await self.tg.reply_on_message(msg, text)

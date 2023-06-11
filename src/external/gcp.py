@@ -8,10 +8,11 @@ logger = logging.getLogger('gcp')
 
 
 class GCPFacade:
-    def __init__(self, speech_to_text_workspace):
+    def __init__(self, speech_to_text_workspace, lang):
         self.storage_client = storage.Client()
         self.speech_client = speech.SpeechClient()
         self.speech_workspace = speech_to_text_workspace
+        self.lang = lang
 
     def upload_to_bucket(self, audio_file: Path) -> str:
         logger.info(f'Upload to bucket {audio_file}')
@@ -26,7 +27,7 @@ class GCPFacade:
         config = speech.RecognitionConfig(
             encoding=speech.RecognitionConfig.AudioEncoding.OGG_OPUS,
             sample_rate_hertz=48000,
-            language_code="ru-RU",
+            language_code=self.lang,
             model="default",
             audio_channel_count=1,
             enable_word_time_offsets=True,
