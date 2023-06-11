@@ -91,6 +91,15 @@ resource "google_project_iam_binding" "iam_deployer_servie_account_user" {
   ]
 }
 
+resource "google_project_iam_binding" "iam_deployer_datastore" {
+  project = "${var.gcp_project_name}"
+  role    = "roles/datastore.owner"
+
+  members = [
+   "serviceAccount:${google_service_account.deployer.email}",
+  ]
+}
+
 resource "google_service_account_key" "deployer_key" {
   service_account_id = google_service_account.deployer.name
 

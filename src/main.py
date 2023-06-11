@@ -33,7 +33,8 @@ def main(webhook: bool,
          port: int,
          secret_token: str,
          language: str,
-         url: str):
+         url: str,
+         datastore_db: str):
     gcp = GCPFacade(speech_to_text_workspace, language)
     tg = TelegramFacade(telegram_token)
 

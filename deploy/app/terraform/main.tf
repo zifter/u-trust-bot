@@ -40,6 +40,7 @@ resource "google_firestore_database" "db" {
   name          = local.firestore_database
   location_id   = var.gcp_region
   type          = "DATASTORE_MODE"
+
   app_engine_integration_mode = "DISABLED"
   concurrency_mode            = "OPTIMISTIC"
 }
