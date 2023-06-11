@@ -1,8 +1,12 @@
 locals {
   cloud_run_name = "u-trust-bot-${var.env_name}"
+
   # TODO
   # https://github.com/hashicorp/terraform-provider-google/issues/9277
-  service_url = "https://${local.cloud_run_name}-5svpu4bngq-lm.a.run.app"
+  project_hash = "5svpu4bngq"
+  region_hash = "lm"
+  calculated_service_url = "https://${local.cloud_run_name}-${local.project_hash}-${local.region_hash}.a.run.app"
+  service_url = "${var.service_url != "" ? var.service_url : local.calculated_service_url}"
 }
 
 resource "google_storage_bucket" "speech2text_workspace" {
