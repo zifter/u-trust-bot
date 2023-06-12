@@ -15,7 +15,7 @@ from utrust.bot import Bot
 logger = logging.getLogger('u-trust-bot')
 
 
-def env_var(env, default=None, prefix='TRUST_'):
+def env_var(env, default=None, prefix='UTRUST_'):
     return os.environ.get(f'{prefix}{env}', default)
 
 
