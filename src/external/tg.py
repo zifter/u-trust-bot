@@ -22,7 +22,7 @@ class Message:
         return destination
 
 
-class TelegramFacade:
+class Telegram:
     def __init__(self, token):
         self.application: Application = Application.builder().token(token).build()
 

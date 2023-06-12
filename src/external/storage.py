@@ -1,6 +1,6 @@
 import logging
 
-from google.cloud import datastore, ndb
+from google.cloud import ndb
 
 logger = logging.getLogger('storage')
 

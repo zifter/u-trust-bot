@@ -1,38 +1,36 @@
-import tempfile
-from pathlib import Path
+from logging import getLogger
 
-from external.gcp import GCPFacade
-from external.storage import Storage, User
-from external.tg import TelegramFacade, Message
-from utils.st import rand_string_id
+from external.tg import Message
+from utrust.commands import MessageContext, ProcessMessageCommand
+from utrust.context import AppContext
+from external.facade import ExternalAPIFacade
 
 
-class UTrustBot:
-    def __init__(self, gcp: GCPFacade, tg: TelegramFacade, db: Storage):
-        self.gcp = gcp
-        self.tg = tg
-        self.db = db
+logger = getLogger('bot')
 
-        self.tmp_dir = Path(tempfile.mkdtemp(suffix='tg-audio-files'))
 
-        self.tg.add_message_processor(self.process_message)
+class Bot:
+    def __init__(self, facade: ExternalAPIFacade):
+        self.facade = facade
+        self.app_context = AppContext(self.facade)
+
+        self._init()
+
+    def _init(self):
+        self.facade.tg.add_message_processor(self.process_message)
 
     def run_polling(self):
-        self.tg.run_polling()
+        self.facade.tg.run_polling()
 
     def run_webhook(self, *args):
-        self.tg.run_webhook(*args)
+        self.facade.tg.run_webhook(*args)
 
     async def process_message(self, msg: Message):
-        audio_file_path = self.tmp_dir / rand_string_id(prefix='audio-', suffix='.ogg')
+        message_context = MessageContext(msg, self.app_context)
 
-        user: User = self.db.get_user(msg.telegram_id)
-        if user is None:
-            user = User()
-            user.telegram_id = msg.telegram_id
-            self.db.create_user(user)
+        cmd = ProcessMessageCommand(message_context)
 
-        audio_file = await msg.save_voice_file(audio_file_path)
-        audio_url = self.gcp.upload_to_bucket(audio_file)
-        text = self.gcp.speech_to_text(audio_url)
-        await self.tg.reply_on_message(msg, text)
+        try:
+            await cmd.exec()
+        except Exception as e:
+            logger.exception(e)

@@ -4,10 +4,12 @@ import os
 
 from argparse import ArgumentParser
 
-from external.gcp import GCPFacade
+from external.gcp import GCP
 from external.storage import Storage
-from external.tg import TelegramFacade
-from utrust.bot import UTrustBot
+from external.tg import Telegram
+from external.facade import ExternalAPIFacade
+
+from utrust.bot import Bot
 
 
 logger = logging.getLogger('u-trust-bot')
@@ -21,13 +23,13 @@ def get_args():
     parser = ArgumentParser()
     parser.add_argument("--environment-name", default=env_var('ENVIRONMENT_NAME', 'staging'), type=str)
     parser.add_argument("--webhook", default=True, action=argparse.BooleanOptionalAction)
-    parser.add_argument("--telegram-token", default=os.environ.get('UTRUST_TELEGRAM_TOKEN', None))
-    parser.add_argument("--secret-token", default=os.environ.get('UTRUST_SECRET_TOKEN', None), type=str)
-    parser.add_argument("--url", default=os.environ.get('UTRUST_URL', None), type=str)
-    parser.add_argument("--port", default=int(os.environ.get("UTRUST_PORT", 8080)), type=int)
-    parser.add_argument("--language", default=os.environ.get("UTRUST_LANGUAGE", "ru-RU"), type=str)
+    parser.add_argument("--telegram-token", default=env_var('TELEGRAM_TOKEN', None))
+    parser.add_argument("--secret-token", default=env_var('SECRET_TOKEN', None), type=str)
+    parser.add_argument("--url", default=env_var('URL', None), type=str)
+    parser.add_argument("--port", default=int(env_var('PORT', 8080)), type=int)
+    parser.add_argument("--language", default=env_var('LANGUAGE', "ru-RU"), type=str)
 
-    parser.add_argument("--speech-to-text-workspace", default=os.environ.get('UTRUST_SPEECH_TO_TEXT_WORKSPACE', None))
+    parser.add_argument("--speech-to-text-workspace", default=env_var('SPEECH_TO_TEXT_WORKSPACE', None))
 
     return parser.parse_args()
 
@@ -40,11 +42,15 @@ def main(environment_name: str,
          secret_token: str,
          language: str,
          url: str):
-    gcp = GCPFacade(speech_to_text_workspace, language)
-    tg = TelegramFacade(telegram_token)
+    logger.info('Start bot')
 
-    db = Storage(environment_name)
-    bot = UTrustBot(gcp, tg, db)
+    facade = ExternalAPIFacade(
+        gcp=GCP(speech_to_text_workspace, language),
+        tg=Telegram(telegram_token),
+        db=Storage(environment_name)
+    )
+
+    bot = Bot(facade)
     if webhook:
         bot.run_webhook(port, secret_token, url)
     else:
