@@ -65,6 +65,10 @@ resource "google_cloud_run_service" "run_bot" {
       containers {
         image = "${var.bot_image}"
         env {
+          name = "UTRUST_ENVIRONMENT_NAME"
+          value = "${var.env_name}"
+        }
+        env {
           name = "UTRUST_TELEGRAM_TOKEN"
           value = "${var.telegram_token}"
         }

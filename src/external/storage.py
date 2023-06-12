@@ -16,8 +16,8 @@ class User(ndb.Model):
 class Storage:
     USER = 'User'
 
-    def __init__(self):
-        self.client = ndb.Client()
+    def __init__(self, namespace):
+        self.client = ndb.Client(namespace=namespace)
 
     def get_user(self, telegram_id):
         logger.info(f'Create user {telegram_id}')

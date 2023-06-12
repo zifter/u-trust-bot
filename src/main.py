@@ -13,8 +13,13 @@ from utrust.bot import UTrustBot
 logger = logging.getLogger('u-trust-bot')
 
 
+def env_var(env, default=None, prefix='TRUST_'):
+    return os.environ.get(f'{prefix}{env}', default)
+
+
 def get_args():
     parser = ArgumentParser()
+    parser.add_argument("--environment-name", default=env_var('ENVIRONMENT_NAME', 'staging'), type=str)
     parser.add_argument("--webhook", default=True, action=argparse.BooleanOptionalAction)
     parser.add_argument("--telegram-token", default=os.environ.get('UTRUST_TELEGRAM_TOKEN', None))
     parser.add_argument("--secret-token", default=os.environ.get('UTRUST_SECRET_TOKEN', None), type=str)
@@ -27,7 +32,8 @@ def get_args():
     return parser.parse_args()
 
 
-def main(webhook: bool,
+def main(environment_name: str,
+         webhook: bool,
          telegram_token: str,
          speech_to_text_workspace: str,
          port: int,
@@ -37,7 +43,7 @@ def main(webhook: bool,
     gcp = GCPFacade(speech_to_text_workspace, language)
     tg = TelegramFacade(telegram_token)
 
-    db = Storage()
+    db = Storage(environment_name)
     bot = UTrustBot(gcp, tg, db)
     if webhook:
         bot.run_webhook(port, secret_token, url)
