@@ -37,7 +37,7 @@ class GCP:
         operation = self.speech_client.long_running_recognize(config=config, audio=audio)
 
         logger.info("Waiting for operation to complete...")
-        response = operation.result(timeout=90)
+        response = operation.result(timeout=5*60)
 
         transcripts = []
         for result in response.results:
