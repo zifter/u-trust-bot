@@ -21,8 +21,19 @@ touch .env
 
 
 # References:
+## Terraform
+* https://cloud.google.com/docs/terraform/blueprints/terraform-blueprints
 * https://registry.terraform.io/providers/hashicorp/google/latest/docs
 * https://registry.terraform.io/providers/integrations/github/latest/docs
 * https://registry.terraform.io/providers/hashicorp/random/latest/docs
-* https://cloud.google.com/iam/docs/understanding-roles
+
+
+## Github
 * https://docs.github.com/en/actions/learn-github-actions/variables
+
+## GCP
+### Cloud
+* https://cloud.google.com/iam/docs/understanding-roles
+
+### Python
+https://github.com/googleapis/python-ndb/blob/main/tests/system/test_crud.py
