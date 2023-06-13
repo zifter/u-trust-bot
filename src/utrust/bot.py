@@ -1,7 +1,8 @@
 from logging import getLogger
 
 from external.tg import Message
-from utrust.commands import MessageContext, ProcessMessageCommand
+from utrust.context import MessageContext
+from utrust.commands.flow import ProcessMessageCommand
 from utrust.context import AppContext
 from external.facade import ExternalAPIFacade
 
