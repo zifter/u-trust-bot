@@ -2,15 +2,9 @@ import logging
 
 from google.cloud import ndb
 
+from external.db.types import User
+
 logger = logging.getLogger('storage')
-
-
-class User(ndb.Model):
-    telegram_id = ndb.IntegerProperty()
-
-    @classmethod
-    def query_by_telegram_id(cls, telegram_id):
-        return cls.query(cls.telegram_id == telegram_id)
 
 
 class Storage:

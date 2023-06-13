@@ -5,7 +5,7 @@ import os
 from argparse import ArgumentParser
 
 from external.gcp import GCP
-from external.storage import Storage
+from external.db.storage import Storage
 from external.tg import Telegram
 from external.facade import ExternalAPIFacade
 

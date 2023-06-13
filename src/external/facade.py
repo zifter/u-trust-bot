@@ -1,5 +1,5 @@
 from external.gcp import GCP
-from external.storage import Storage
+from external.db.storage import Storage
 from external.tg import Telegram
 
 

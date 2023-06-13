@@ -1,10 +1,11 @@
 import abc
+from datetime import datetime
 from logging import getLogger
 from pathlib import Path
 from typing import final, Optional, List
 
 from external.facade import ExternalAPIFacade
-from external.storage import User
+from external.db.types import User, Registration
 from external.tg import Message
 from utils.st import rand_string_id
 
@@ -13,7 +14,7 @@ from utrust.context import MessageContext, UserCommandContext, AppContext
 logger = getLogger('commands')
 
 
-class Command:
+class CommandBase:
     def __init__(self):
         pass
 
@@ -23,7 +24,7 @@ class Command:
 
         commands = await self.do_exec()
         if commands:
-            if isinstance(commands, Command):
+            if isinstance(commands, CommandBase):
                 await commands.exec()
             elif isinstance(commands, list):
                 for cmd in commands:
@@ -34,11 +35,11 @@ class Command:
         logger.info(f'Execute {self.__class__}. End')
 
     @abc.abstractmethod
-    async def do_exec(self) -> Optional[List['Command']]:
+    async def do_exec(self) -> Optional[List['CommandBase']]:
         raise NotImplemented()
 
 
-class AppCommand(Command):
+class AppCommandBase(CommandBase):
     def __init__(self, app_context: AppContext):
         super().__init__()
 
@@ -53,7 +54,7 @@ class AppCommand(Command):
         return self.app_context.tmp_dir
 
 
-class MessageCommand(AppCommand):
+class MessageCommandBase(AppCommandBase):
     def __init__(self, message_context: MessageContext):
         super().__init__(message_context.app_context)
 
@@ -64,7 +65,7 @@ class MessageCommand(AppCommand):
         return self.message_context.message
 
 
-class UserCommand(MessageCommand):
+class UserCommandBase(MessageCommandBase):
     def __init__(self, user_context: UserCommandContext):
         super().__init__(user_context.message_context)
 
@@ -75,18 +76,25 @@ class UserCommand(MessageCommand):
         return self.user_context.user
 
 
-class ProcessMessageCommand(MessageCommand):
+class ProcessMessageCommand(MessageCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
     async def do_exec(self):
         user: User = self.external.db.get_user(self.message.telegram_id)
         if user is None:
-            user = User()
-            user.telegram_id = self.message.telegram_id
+            user = User(
+                telegram_id=self.message.telegram_id,
+                registration=Registration(
+                    created_at=datetime.now()
+                )
+            )
             self.external.db.create_user(user)
 
         user_context = UserCommandContext(user, self.message_context)
+
+        if user.registration.confirmed:
+            return SendTextMessageToUserCommand('You are not authorized', user_context)
 
         return [
             AuthorizeUserCommand(user_context),
@@ -94,7 +102,7 @@ class ProcessMessageCommand(MessageCommand):
         ]
 
 
-class AuthorizeUserCommand(UserCommand):
+class AuthorizeUserCommand(UserCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -103,7 +111,7 @@ class AuthorizeUserCommand(UserCommand):
         pass
 
 
-class SpeechToTextCommand(UserCommand):
+class SpeechToTextCommand(UserCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -118,7 +126,7 @@ class SpeechToTextCommand(UserCommand):
         return SendTextMessageToUserCommand(text, self.user_context)
 
 
-class SendTextMessageToUserCommand(UserCommand):
+class SendTextMessageToUserCommand(UserCommandBase):
     def __init__(self, text, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
