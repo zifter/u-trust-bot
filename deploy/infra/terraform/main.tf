@@ -145,6 +145,20 @@ locals {
   artifact_registry_url = "${var.gcp_region}-docker.pkg.dev/${var.gcp_project_name}/${google_artifact_registry_repository.artifact_registry.repository_id}"
 }
 
+module "environment_test" {
+  source = "./modules/app_env"
+
+  env_name="test"
+
+  github_owner="${var.github_owner}"
+  github_token="${var.github_token}"
+  github_repository="${var.github_repository}"
+
+  gcp_project_name="${var.gcp_project_name}"
+  gcp_region="${var.gcp_region}"
+  gcp_zone="${var.gcp_zone}"
+}
+
 module "environment_staging" {
   source = "./modules/app_env"
 
