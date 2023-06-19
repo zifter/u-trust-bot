@@ -25,7 +25,7 @@ class ProcessMessageCommand(MessageCommandBase):
 
         user_context = UserCommandContext(user, self.message_context)
 
-        if user.registration.confirmed:
+        if not user.registration.confirmed:
             return AuthorizeUserCommand(user_context)
 
         return SpeechToTextCommand(user_context)
