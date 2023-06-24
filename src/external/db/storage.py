@@ -12,8 +12,8 @@ logger = logging.getLogger('storage')
 class Storage:
     USER = 'User'
 
-    def __init__(self, namespace):
-        self.client = ndb.Client(namespace=namespace)
+    def __init__(self, client):
+        self.client = client
         self.migrator = Migrator()
 
     def create_new_user(self, telegram_id) -> User:

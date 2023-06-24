@@ -4,6 +4,8 @@ import os
 
 from argparse import ArgumentParser
 
+from google.cloud import ndb
+
 from external.gcp import GCP
 from external.db.storage import Storage
 from external.tg import Telegram
@@ -47,7 +49,7 @@ def main(environment_name: str,
     facade = ExternalAPIFacade(
         gcp=GCP(speech_to_text_workspace, language),
         tg=Telegram(telegram_token),
-        db=Storage(environment_name)
+        db=Storage(ndb.Client(namespace=environment_name))
     )
 
     bot = Bot(facade)
