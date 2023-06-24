@@ -21,6 +21,9 @@ class Message:
         await new_file.download_to_drive(destination)
         return destination
 
+    def vo_duration(self) -> int:
+        return self.update.message.voice.duration
+
 
 class Telegram:
     def __init__(self, token):

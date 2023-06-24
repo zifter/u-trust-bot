@@ -1,34 +1,39 @@
 import abc
-from datetime import datetime
+import logging
 
-from external.db.types import User, Registration
+from external.db.models import User
 from utils.st import rand_string_id
 from utrust.commands.base import MessageCommandBase, UserCommandBase
 
 from utrust.context import UserCommandContext
 
 
-class ProcessMessageCommand(MessageCommandBase):
+logger = logging.getLogger('user-flow')
+
+
+class HandleMessageCommand(MessageCommandBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
     async def do_exec(self):
         user: User = self.external.db.get_user(self.message.telegram_id)
         if user is None:
-            user = User(
-                telegram_id=self.message.telegram_id,
-                registration=Registration(
-                    created_at=datetime.now()
-                )
-            )
-            self.external.db.create_user(user)
+            user = self.external.db.create_new_user(self.message.telegram_id)
+            self.external.db.save_user(user)
+
+        user.analytics.processed_messages += 1
 
         user_context = UserCommandContext(user, self.message_context)
 
-        if not user.registration.confirmed:
-            return AuthorizeUserCommand(user_context)
+        try:
+            if not user.registration.confirmed:
+                return AuthorizeUserCommand(user_context)
 
-        return SpeechToTextCommand(user_context)
+            return SpeechToTextCommand(user_context)
+        finally:
+            user.analytics.failed_messages += 1
+
+            self.external.db.save_user(user)
 
 
 class AuthorizeUserCommand(UserCommandBase):
@@ -45,6 +50,8 @@ class SpeechToTextCommand(UserCommandBase):
 
     @abc.abstractmethod
     async def do_exec(self):
+        self.user.analytics.vo_total_seconds += self.message.vo_duration()
+
         audio_file_path = self.tmp_dir / rand_string_id(prefix='audio-', suffix='.ogg')
 
         audio_file = await self.message.save_voice_file(audio_file_path)

@@ -2,7 +2,7 @@ import abc
 from pathlib import Path
 from typing import final, Optional, List
 
-from external.db.types import User
+from external.db.models import User
 from external.facade import ExternalAPIFacade
 from external.tg import Message
 from utrust.commands import logger

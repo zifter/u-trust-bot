@@ -1,7 +1,7 @@
 import tempfile
 from pathlib import Path
 
-from external.db.types import User
+from external.db.models import User
 from external.tg import Message
 from external.facade import ExternalAPIFacade
 

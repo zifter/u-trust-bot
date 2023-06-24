@@ -2,7 +2,7 @@ from logging import getLogger
 
 from external.tg import Message
 from utrust.context import MessageContext
-from utrust.commands.flow import ProcessMessageCommand
+from utrust.commands.flow import HandleMessageCommand
 from utrust.context import AppContext
 from external.facade import ExternalAPIFacade
 
@@ -29,7 +29,7 @@ class Bot:
     async def process_message(self, msg: Message):
         message_context = MessageContext(msg, self.app_context)
 
-        cmd = ProcessMessageCommand(message_context)
+        cmd = HandleMessageCommand(message_context)
 
         try:
             await cmd.exec()
