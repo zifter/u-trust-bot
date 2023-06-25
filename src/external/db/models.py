@@ -1,6 +1,10 @@
 from google.cloud import ndb
 
 
+class Application(ndb.Model):
+    version = ndb.IntegerProperty(default=0)
+
+
 class Registration(ndb.Model):
     created_at = ndb.DateTimeProperty()
     confirmed = ndb.BooleanProperty(default=False)
@@ -22,5 +26,5 @@ class User(ndb.Model):
     def query_by_telegram_id(cls, telegram_id):
         return cls.query(cls.telegram_id == telegram_id)
 
-    def __repr__(self):
-        return f'{self.telegram_id}'
+    def __str__(self):
+        return f'User{self.telegram_id}'

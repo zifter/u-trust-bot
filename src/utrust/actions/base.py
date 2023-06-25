@@ -5,13 +5,15 @@ from typing import final, Optional, List
 from external.db.models import User
 from external.facade import ExternalAPIFacade
 from external.tg import Message
-from utrust.commands import logger
-from utrust.context import AppContext, MessageContext, UserCommandContext
+from utrust.context import AppContext, MessageContext, UserContext
+
+from . import logger
+from .permissions import Permission
 
 
-class CommandBase:
+class ActionBase:
     def __init__(self):
-        pass
+        self.permissions = []
 
     @final
     async def exec(self):
@@ -19,7 +21,7 @@ class CommandBase:
 
         commands = await self.do_exec()
         if commands:
-            if isinstance(commands, CommandBase):
+            if isinstance(commands, ActionBase):
                 await commands.exec()
             elif isinstance(commands, list):
                 for cmd in commands:
@@ -27,14 +29,14 @@ class CommandBase:
             else:
                 raise ValueError()
 
-        logger.info(f'Execute {self.__class__}. End')
+        logger.info(f'Execute {self.__class__.__name__}. End')
 
     @abc.abstractmethod
-    async def do_exec(self) -> Optional[List['CommandBase']]:
+    async def do_exec(self) -> Optional[List['ActionBase']]:
         raise NotImplemented()
 
 
-class AppCommandBase(CommandBase):
+class AppActionBase(ActionBase):
     def __init__(self, app_context: AppContext):
         super().__init__()
 
@@ -49,7 +51,7 @@ class AppCommandBase(CommandBase):
         return self.app_context.tmp_dir
 
 
-class MessageCommandBase(AppCommandBase):
+class MessageActionBase(AppActionBase):
     def __init__(self, message_context: MessageContext):
         super().__init__(message_context.app_context)
 
@@ -60,11 +62,12 @@ class MessageCommandBase(AppCommandBase):
         return self.message_context.message
 
 
-class UserCommandBase(MessageCommandBase):
-    def __init__(self, user_context: UserCommandContext):
+class UserActionBase(MessageActionBase):
+    def __init__(self, user_context: UserContext):
         super().__init__(user_context.message_context)
 
-        self.user_context: UserCommandContext = user_context
+        self.user_context: UserContext = user_context
+        self.permissions = [Permission.AUTHORIZED]
 
     @property
     def user(self) -> User:

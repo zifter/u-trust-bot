@@ -1,3 +1,3 @@
 from logging import getLogger
 
-logger = getLogger('commands')
+logger = getLogger('actions')

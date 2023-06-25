@@ -1,6 +1,6 @@
 from unittest.mock import MagicMock
 
-from external.db.migrator import Migrator
+from external.db.migrator.user_migrator import UserMigrator
 from external.db.models import User, Registration
 from external.db.storage import Storage
 
@@ -16,7 +16,7 @@ def test_new_user_is_equal_migration():
         )
     )
 
-    migrator = Migrator()
+    migrator = UserMigrator()
     migrated_user = migrator.migrate(user)
     assert migrated_user == new_user
 

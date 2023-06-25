@@ -1,4 +1,5 @@
 import logging
+from enum import Enum
 from typing import List
 
 from telegram import Update
@@ -7,10 +8,34 @@ from telegram.ext import ContextTypes, Application, MessageHandler, filters
 logger = logging.getLogger('telegram')
 
 
+class MessageContentType(Enum):
+    NONE = 0
+    COMMAND = 1
+    TEXT = 2
+    VOICE = 3
+
+
+
 class Message:
     def __init__(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         self.update = update
         self.context = context
+
+    @property
+    def content_type(self) -> MessageContentType:
+        if self.update.message.text:
+            if self.update.message.text.startswith('/'):
+                return MessageContentType.COMMAND
+            else:
+                return MessageContentType.TEXT
+        elif self.update.message.voice:
+            return MessageContentType.VOICE
+        else:
+            return MessageContentType.NONE
+
+    @property
+    def text(self) -> str:
+        return self.update.message.text
 
     @property
     def telegram_id(self):
@@ -29,7 +54,7 @@ class Telegram:
     def __init__(self, token):
         self.application: Application = Application.builder().token(token).build()
 
-        self.application.add_handler(MessageHandler(filters.VOICE, self.receive))
+        self.application.add_handler(MessageHandler(filters.VOICE | filters.TEXT, self.receive))
         self._message_processor: List = []
 
     def add_message_processor(self, processor):
@@ -39,6 +64,9 @@ class Telegram:
         logger.info(f'Send message "{text}"')
 
         await msg.update.message.reply_text(text)
+
+    async def set_my_commands(self, commands):
+        await self.application.bot.set_my_commands(commands)
 
     def run_polling(self):
         self.application.run_polling()

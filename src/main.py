@@ -1,4 +1,3 @@
-import argparse
 import logging
 import os
 
@@ -11,7 +10,7 @@ from external.db.storage import Storage
 from external.tg import Telegram
 from external.facade import ExternalAPIFacade
 
-from utrust.bot import Bot
+from utrust.bot import BotApplication
 
 
 logger = logging.getLogger('u-trust-bot')
@@ -23,43 +22,62 @@ def env_var(env, default=None, prefix='UTRUST_'):
 
 def get_args():
     parser = ArgumentParser()
-    parser.add_argument("--environment-name", default=env_var('ENVIRONMENT_NAME', 'staging'), type=str)
-    parser.add_argument("--webhook", default=True, action=argparse.BooleanOptionalAction)
+    parser.add_argument("--environment-name", default=env_var('ENVIRONMENT_NAME', 'test'), type=str)
     parser.add_argument("--telegram-token", default=env_var('TELEGRAM_TOKEN', None))
-    parser.add_argument("--secret-token", default=env_var('SECRET_TOKEN', None), type=str)
-    parser.add_argument("--url", default=env_var('URL', None), type=str)
-    parser.add_argument("--port", default=int(env_var('PORT', 8080)), type=int)
+    parser.add_argument("--speech-to-text-workspace", default=env_var('SPEECH_TO_TEXT_WORKSPACE', None))
     parser.add_argument("--language", default=env_var('LANGUAGE', "ru-RU"), type=str)
 
-    parser.add_argument("--speech-to-text-workspace", default=env_var('SPEECH_TO_TEXT_WORKSPACE', None))
+    subparsers = parser.add_subparsers(dest='command')
+
+    parser_handler = subparsers.add_parser('polling', help='Run Telegram MessageHandler')
+    parser_handler.set_defaults(command_func=cmd_polling)
+
+    parser_handler = subparsers.add_parser('webhook', help='Run Telegram MessageHandler')
+    parser_handler.add_argument("--secret-token", default=env_var('SECRET_TOKEN', None), type=str)
+    parser_handler.add_argument("--url", default=env_var('URL', None), type=str)
+    parser_handler.add_argument("--port", default=int(env_var('PORT', 8080)), type=int)
+    parser_handler.set_defaults(command_func=cmd_webhook)
+
+    parser_init = subparsers.add_parser('app-migrate', help='Migration Application State')
+    parser_init.set_defaults(command_func=cmd_app_migrate)
 
     return parser.parse_args()
 
 
-def main(environment_name: str,
-         webhook: bool,
+def cmd_polling(app: BotApplication):
+    app.run_polling()
+
+
+def cmd_webhook(app: BotApplication, port: int, secret_token: str, url: str):
+    app.run_webhook(port, secret_token, url)
+
+
+def cmd_app_migrate(app: BotApplication):
+    app.app_migrate()
+
+
+def main(command_func,
+         command: str,
+         environment_name: str,
          telegram_token: str,
          speech_to_text_workspace: str,
-         port: int,
-         secret_token: str,
          language: str,
-         url: str):
-    logger.info('Start bot')
+         **kwargs):
+    logger.info(f'Start bot with command {command}')
 
-    facade = ExternalAPIFacade(
+    external = ExternalAPIFacade(
         gcp=GCP(speech_to_text_workspace, language),
         tg=Telegram(telegram_token),
         db=Storage(ndb.Client(namespace=environment_name))
     )
-
-    bot = Bot(facade)
-    if webhook:
-        bot.run_webhook(port, secret_token, url)
-    else:
-        bot.run_polling()
+    bot = BotApplication(external)
+    command_func(bot, **kwargs)
 
 
 if __name__ == '__main__':
     args = get_args()
     logger.info(args)
+
+    cmd = args.command
+
     main(**vars(args))
