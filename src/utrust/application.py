@@ -20,7 +20,7 @@ class BotApplication:
     def __init__(self, external: ExternalAPI):
         layout = [
             Section('Account', [
-                Command('start', 'Print this welcome message', CommandStart),
+                Command('start', 'Print welcome message', CommandStart),
                 Command('auth', 'Authorize to use full functions', CommandAuthorizeUser),
                 Command('forgetme', 'Delete all data that bot aware about you', CommandForgetUser),
             ]),
