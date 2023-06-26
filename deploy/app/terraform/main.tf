@@ -64,7 +64,7 @@ resource "google_cloud_run_service" "run_bot" {
     spec {
       containers {
         image = "${var.bot_image}"
-        args = ["webhook"]
+        args = ["python", "main.py", "webhook"]
         env {
           name = "UTRUST_ENVIRONMENT_NAME"
           value = "${var.env_name}"
@@ -106,7 +106,7 @@ resource "google_cloud_run_v2_job" "app_migrate_job" {
       timeout = "30s"
       containers {
         image = "${var.bot_image}"
-        args  = ["app-migrate"]
+        args  = ["python", "main.py", "app-migrate"]
         env {
           name  = "UTRUST_ENVIRONMENT_NAME"
           value = "${var.env_name}"
