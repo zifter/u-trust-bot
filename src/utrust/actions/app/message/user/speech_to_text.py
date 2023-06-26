@@ -1,8 +1,8 @@
 import abc
 
 from utils.st import rand_string_id
-from utrust.actions.base import UserActionBase
-from utrust.actions.send_text_message_to_user import SendTextMessageToUserAction
+from utrust.actions.app.message.user.base import UserActionBase
+from utrust.actions.app.message.user.send_text_message_to_user import SendTextMessageToUserAction
 
 
 class SpeechToTextAction(UserActionBase):

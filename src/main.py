@@ -5,12 +5,12 @@ from argparse import ArgumentParser
 
 from google.cloud import ndb
 
-from external.gcp import GCP
-from external.db.storage import Storage
-from external.tg import Telegram
-from external.facade import ExternalAPIFacade
+from external.gcp.facade import GCPFacade
+from external.db.facade import StorageFacade
+from external.tg.facade import TelegramFacade
+from external import ExternalAPI
 
-from utrust.bot import BotApplication
+from utrust.application import BotApplication
 
 
 logger = logging.getLogger('u-trust-bot')
@@ -65,10 +65,10 @@ def main(command_func,
          **kwargs):
     logger.info(f'Start bot with command {command}')
 
-    external = ExternalAPIFacade(
-        gcp=GCP(speech_to_text_workspace, language),
-        tg=Telegram(telegram_token),
-        db=Storage(ndb.Client(namespace=environment_name))
+    external = ExternalAPI(
+        gcp=GCPFacade(speech_to_text_workspace, language),
+        tg=TelegramFacade(telegram_token),
+        db=StorageFacade(ndb.Client(namespace=environment_name))
     )
     bot = BotApplication(external)
     command_func(bot, **kwargs)
@@ -77,7 +77,5 @@ def main(command_func,
 if __name__ == '__main__':
     args = get_args()
     logger.info(args)
-
-    cmd = args.command
 
     main(**vars(args))

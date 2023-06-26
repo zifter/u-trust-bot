@@ -1,17 +1,15 @@
 from external.db.models import User
-from external.tg import MessageContentType
-from utrust.actions.base import MessageActionBase
+from external.tg.message import MessageContentType
+from utrust.actions.app.message.user.base import MessageActionBase
 from utrust.actions.permissions import Permission
-from utrust.actions.speech_to_text import SpeechToTextAction
+from utrust.actions.app.message.user.speech_to_text import SpeechToTextAction
 from utrust.context import UserContext
-from utrust.actions.command_authorize_user import CommandAuthorizeUser
+from utrust.actions.app.message.user.commands.command_authorize_user import CommandAuthorizeUser
 
 
 class HandleMessageAction(MessageActionBase):
-    def __init__(self, commands, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
-        self.commands = commands
 
     async def do_exec(self):
         user: User = self.external.db.get_user(self.message.telegram_id)
@@ -39,9 +37,9 @@ class HandleMessageAction(MessageActionBase):
         if self.message.content_type == MessageContentType.COMMAND:
             args = self.message.text.split(' ')
             command_name = args[0][1:]
-            for name, descr, action in self.commands:
-                if name == command_name:
-                    return action(user_context)
+
+            action = self.app_context.commander.get_action_class(command_name)
+            return action(user_context)
         elif self.message.content_type == MessageContentType.TEXT:
             pass
         elif self.message.content_type == MessageContentType.VOICE:

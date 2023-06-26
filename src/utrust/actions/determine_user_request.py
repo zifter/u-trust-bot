@@ -1,9 +1,9 @@
 from external.tg import MessageContentType
-from .send_text_message_to_user import SendTextMessageToUserAction
-from .speech_to_text import SpeechToTextAction
-from .command_forget_user import CommandForgetUser
+from utrust.actions.app.message.user.send_text_message_to_user import SendTextMessageToUserAction
+from utrust.actions.app.message.user.speech_to_text import SpeechToTextAction
+from utrust.actions.app.message.user.commands.command_forget_user import CommandForgetUser
 
-from .base import UserActionBase
+from utrust.actions.app.message.user.base import UserActionBase
 
 
 class DetermineUserRequestAction(UserActionBase):

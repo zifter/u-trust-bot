@@ -7,7 +7,7 @@ from external.db.models import User, Registration, Analytics, Application
 logger = logging.getLogger('storage')
 
 
-class Storage:
+class StorageFacade:
     USER = 'User'
     APP = 'App'
 

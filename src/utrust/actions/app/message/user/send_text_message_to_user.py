@@ -1,6 +1,6 @@
 import abc
 
-from utrust.actions.base import UserActionBase
+from utrust.actions.app.message.user.base import UserActionBase
 
 
 class SendTextMessageToUserAction(UserActionBase):

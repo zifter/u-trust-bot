@@ -2,11 +2,11 @@ from unittest.mock import MagicMock
 
 from external.db.migrator.user_migrator import UserMigrator
 from external.db.models import User, Registration
-from external.db.storage import Storage
+from external.db.facade import StorageFacade
 
 
 def test_new_user_is_equal_migration():
-    storage = Storage(MagicMock())
+    storage = StorageFacade(MagicMock())
     new_user = storage.create_new_user(1234)
 
     user = User(

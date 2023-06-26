@@ -2,13 +2,15 @@ import tempfile
 from pathlib import Path
 
 from external.db.models import User
-from external.tg import Message
-from external.facade import ExternalAPIFacade
+from external.tg.message import Message
+from external import ExternalAPI
+from utrust.commander import Commander
 
 
 class AppContext:
-    def __init__(self, ext: ExternalAPIFacade):
+    def __init__(self, ext: ExternalAPI, commander: Commander):
         self.external = ext
+        self.commander = commander
         self.tmp_dir = Path(tempfile.mkdtemp(suffix='app-temp'))
 
 

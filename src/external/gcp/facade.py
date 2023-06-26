@@ -7,7 +7,7 @@ from google.cloud import speech
 logger = logging.getLogger('gcp')
 
 
-class GCP:
+class GCPFacade:
     def __init__(self, speech_to_text_workspace, lang):
         self.storage_client = storage.Client()
         self.speech_client = speech.SpeechClient()
