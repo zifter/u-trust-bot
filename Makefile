@@ -12,19 +12,15 @@ dep-up:
 podman-login:
 	gcloud auth print-access-token --quiet | podman login -u oauth2accesstoken --password-stdin ${GCP_ARTIFACT_REGISTRY}
 
-image-build: IMAGE_TAG := test
 image-build:
 	podman build . -t ${IMAGE_TAG}
 
-image-push: IMAGE_TAG := test
 image-push:
 	podman push ${IMAGE_TAG}
 
-image-run: IMAGE_TAG := test
 image-run:
 	podman run ${IMAGE_TAG}
 
-image-test: IMAGE_TAG := test
 image-test:
 	podman run ${IMAGE_TAG} pytest .
 

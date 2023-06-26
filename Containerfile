@@ -32,4 +32,4 @@ COPY . .
 
 WORKDIR /app/src
 
-CMD ["python", "main.py"]
+ENTRYPOINT ["python", "main.py"]
