@@ -26,7 +26,7 @@ class Commander:
         return f"{self._hello_text}\n\nYou can control me by sending these commands:\n{self._commands_list_descr()}"
 
     @property
-    def commands(self):
+    def commands(self) -> List[Command]:
         l = []
         for s in self._layout:
             l.extend(s.commands)
@@ -39,7 +39,7 @@ class Commander:
                 return cmd.action
 
     def telegram_bot_commands(self):
-        return [BotCommand(name, descr) for name, descr, clazz in self.commands]
+        return [BotCommand(cmd.name, cmd.descr) for cmd in self.commands]
 
     def _commands_list_descr(self):
         r = ''
