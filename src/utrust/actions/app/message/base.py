@@ -12,3 +12,17 @@ class MessageActionBase(AppActionBase):
     @property
     def message(self) -> Message:
         return self.message_context.message
+
+
+class CommandStateMixin:
+    def command_complete(self):
+        self.user.command_state.name = ''
+        self.user.command_state.state = {}
+
+    def command_state(self):
+        state = self.user.command_state.state
+        return state if state else {}
+
+    def set_command_state(self, state):
+        self.user.command_state.name = self.COMMAND_NAME
+        self.user.command_state.state = state

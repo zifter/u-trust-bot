@@ -17,3 +17,21 @@ def rand_string_id(total_length: Optional[int] = None, rand_length: int = 10,
     else:
         root = ''.join(random.choice(string.ascii_uppercase) for i in range(rand_length))
     return f'{prefix}{root}{suffix}'
+
+
+def format_time(seconds):
+    minutes, seconds = divmod(seconds, 60)
+    hours, minutes = divmod(minutes, 60)
+    days, hours = divmod(hours, 24)
+
+    time_parts = []
+    if days > 0:
+        time_parts.append(f"{days} day{'s' if days > 1 else ''}")
+    if hours > 0:
+        time_parts.append(f"{hours} hour{'s' if hours > 1 else ''}")
+    if minutes > 0:
+        time_parts.append(f"{minutes} minute{'s' if minutes > 1 else ''}")
+    if seconds >= 0:
+        time_parts.append(f"{seconds} second{'s' if seconds > 1 else ''}")
+
+    return ', '.join(time_parts)

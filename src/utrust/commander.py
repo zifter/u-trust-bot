@@ -6,8 +6,6 @@ from external.tg import BotCommand
 
 @dataclass
 class Command:
-    name: str
-    descr: str
     action: Type['UserActionBase']
 
 
@@ -35,17 +33,17 @@ class Commander:
 
     def get_action_class(self, command_name):
         for cmd in self.commands:
-            if command_name == cmd.name:
+            if command_name == cmd.action.COMMAND_NAME:
                 return cmd.action
 
     def telegram_bot_commands(self):
-        return [BotCommand(cmd.name, cmd.descr) for cmd in self.commands]
+        return [BotCommand(cmd.action.COMMAND_NAME, cmd.action.COMMAND_DESCR) for cmd in self.commands]
 
     def _commands_list_descr(self):
         r = ''
         for s in self._layout:
             r += f'\n<b>{s.name}</b>\n'
-            r += '\n'.join(f'/{cmd.name} {cmd.descr}' for cmd in s.commands)
+            r += '\n'.join(f'/{cmd.action.COMMAND_NAME} {cmd.action.COMMAND_DESCR}' for cmd in s.commands)
             r += '\n'
 
         r = r[:-1]

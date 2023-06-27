@@ -2,7 +2,7 @@ import logging
 from datetime import datetime
 
 from external.db.migrator.user_migrator import UserMigrator
-from external.db.models import User, Registration, Analytics, Application
+from external.db.models import User, Registration, Analytics, Application, CommandState
 
 logger = logging.getLogger('storage')
 
@@ -23,6 +23,7 @@ class StorageFacade:
                 created_at=datetime.now()
             ),
             analytics=Analytics(),
+            command_state=CommandState(name='', state={}),
         )
         return user
 

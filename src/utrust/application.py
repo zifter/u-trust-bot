@@ -6,6 +6,7 @@ from utrust.actions.app.message.user.commands.command_authorize_user import Comm
 from utrust.actions.app.message.user.commands.command_forget_user import CommandForgetUser
 from utrust.actions.app.message.handle_message import HandleMessageAction
 from utrust.actions.app.message.user.commands.command_start import CommandStart
+from utrust.actions.app.message.user.commands.command_user_info import CommandUserInfo
 from utrust.app_migrator import AppMigrator
 from utrust.commander import Section, Command, Commander
 from utrust.context import MessageContext
@@ -19,10 +20,13 @@ logger = getLogger('bot')
 class BotApplication:
     def __init__(self, external: ExternalAPI):
         layout = [
+            Section('Welcome', [
+                Command(CommandStart),
+            ]),
             Section('Account', [
-                Command('start', 'Print welcome message', CommandStart),
-                Command('auth', 'Authorize to use full functions', CommandAuthorizeUser),
-                Command('forgetme', 'Delete all data that bot aware about you', CommandForgetUser),
+                Command(CommandAuthorizeUser),
+                Command(CommandUserInfo),
+                Command(CommandForgetUser),
             ]),
         ]
 
