@@ -131,6 +131,10 @@ resource "google_cloud_run_v2_job" "app_migrate_job" {
 }
 
 resource "null_resource" "trigger_app_migrate_job" {
+  triggers = {
+    always_run = "${timestamp()}"
+  }
+
   provisioner "local-exec" {
     command = "gcloud alpha run jobs execute ${local.cloud_run_job_name} --wait --project=${var.gcp_project_name} --region=${var.gcp_region}"
   }
