@@ -20,10 +20,8 @@ logger = getLogger('bot')
 class BotApplication:
     def __init__(self, external: ExternalAPI):
         layout = [
-            Section('Welcome', [
-                Command(CommandStart),
-            ]),
             Section('Account', [
+                Command(CommandStart, show_in_help=False),
                 Command(CommandAuthorizeUser),
                 Command(CommandUserInfo),
                 Command(CommandForgetUser),

@@ -15,6 +15,7 @@ python-telegram-bot={extras=["webhooks"], version='==20.3'}
 
 [dev-packages]
 pytest='==7.2.1'
+pytest-cov='==4.1.0'
 pytest-asyncio='==0.21.0'
 parameterized="==0.8.1"
 

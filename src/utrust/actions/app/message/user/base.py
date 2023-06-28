@@ -1,3 +1,5 @@
+from abc import ABC
+
 from external.db.models import User
 from utrust.actions.app.message.base import MessageActionBase
 from utrust.context import UserContext
@@ -5,7 +7,7 @@ from utrust.context import UserContext
 from utrust.actions.permissions import Permission
 
 
-class UserActionBase(MessageActionBase):
+class UserActionBase(MessageActionBase, ABC):
     def __init__(self, user_context: UserContext):
         super().__init__(user_context.message_context)
 

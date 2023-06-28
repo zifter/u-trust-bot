@@ -19,7 +19,13 @@ def rand_string_id(total_length: Optional[int] = None, rand_length: int = 10,
     return f'{prefix}{root}{suffix}'
 
 
-def format_time(seconds):
+def format_duration(seconds):
+    if seconds < 0:
+        return 'undefined'
+
+    if seconds == 0:
+        return '0 seconds'
+
     minutes, seconds = divmod(seconds, 60)
     hours, minutes = divmod(minutes, 60)
     days, hours = divmod(hours, 24)
@@ -31,7 +37,7 @@ def format_time(seconds):
         time_parts.append(f"{hours} hour{'s' if hours > 1 else ''}")
     if minutes > 0:
         time_parts.append(f"{minutes} minute{'s' if minutes > 1 else ''}")
-    if seconds >= 0:
+    if seconds > 0:
         time_parts.append(f"{seconds} second{'s' if seconds > 1 else ''}")
 
     return ', '.join(time_parts)

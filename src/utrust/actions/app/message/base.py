@@ -1,9 +1,11 @@
+from abc import ABC
+
 from external.tg.message import Message
 from utrust.actions.app.base import AppActionBase
 from utrust.context import MessageContext
 
 
-class MessageActionBase(AppActionBase):
+class MessageActionBase(AppActionBase, ABC):
     def __init__(self, message_context: MessageContext):
         super().__init__(message_context.app_context)
 

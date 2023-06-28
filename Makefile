@@ -7,6 +7,13 @@ dep-up:
 	pipenv clean
 
 
+
+#######
+# LOCAL
+local-test:
+	pipenv run pytest . --cov=src
+	start htmlcov/index.html
+
 #######
 # IMAGE
 podman-login:
@@ -22,7 +29,7 @@ image-run:
 	podman run ${IMAGE_TAG}
 
 image-test:
-	podman run ${IMAGE_TAG} pytest .
+	podman run ${IMAGE_TAG} pytest . --cov=src
 
 #######
 # INFRA

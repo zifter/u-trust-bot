@@ -2,7 +2,7 @@ import abc
 
 from utils.st import rand_string_id
 from utrust.actions.app.message.user.base import UserActionBase
-from utrust.actions.app.message.user.send_text_message_to_user import SendTextMessageToUserAction
+from utrust.actions.app.message.user.determine_user_text_request import DetermineUserTextRequestAction
 
 
 class SpeechToTextAction(UserActionBase):
@@ -19,4 +19,4 @@ class SpeechToTextAction(UserActionBase):
         audio_url = self.external.gcp.upload_to_bucket(audio_file)
         text = self.external.gcp.speech_to_text(audio_url)
 
-        return SendTextMessageToUserAction(text, self.user_context)
+        return DetermineUserTextRequestAction(text, self.user_context)

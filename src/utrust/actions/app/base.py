@@ -1,3 +1,4 @@
+from abc import ABC
 from pathlib import Path
 
 from external import ExternalAPI
@@ -5,7 +6,7 @@ from utrust.actions.base import ActionBase
 from utrust.context import AppContext
 
 
-class AppActionBase(ActionBase):
+class AppActionBase(ActionBase, ABC):
     def __init__(self, app_context: AppContext):
         super().__init__()
 
