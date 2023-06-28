@@ -9,6 +9,5 @@ class SendTextMessageToUserAction(UserActionBase):
 
         self.text = text
 
-    @abc.abstractmethod
     async def do_exec(self):
         await self.external.tg.reply_on_message(self.message, self.text)

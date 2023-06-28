@@ -9,7 +9,6 @@ class SpeechToTextAction(UserActionBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    @abc.abstractmethod
     async def do_exec(self):
         self.user.analytics.vo_total_seconds += self.message.vo_duration()
 
