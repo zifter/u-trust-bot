@@ -39,6 +39,12 @@ async def conv(telegram_client) -> Conversation:
         await conv.send_message("/start")
         _ = await conv.get_response()  # Welcome message
         await conv.send_message("/auth")
-        await conv.send_message("I-trust-U")
+        auth = await conv.get_response()
+        if 'Please, send me authorization code' in auth.text:
+            await conv.send_message("I-trust-U")
+        elif 'You are already authorized' in auth.text:
+            pass
+        else:
+            assert False, 'Unknown state'
 
         yield conv

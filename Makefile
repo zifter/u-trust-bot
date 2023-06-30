@@ -43,7 +43,13 @@ e2e-image-test:
 	podman run ${E2E_IMAGE_TAG} pytest . -m "not e2e"
 
 e2e-image-run:
-	podman run ${E2E_IMAGE_TAG} pytest .
+	podman run \
+		--env TELEGRAM_APP_ID=${TELEGRAM_APP_ID} \
+		--env TELEGRAM_APP_HASH=${TELEGRAM_APP_HASH} \
+		--env TELEGRAM_APP_SESSION=${TELEGRAM_APP_SESSION} \
+		--env UTRUST_BOT_NAME=${UTRUST_BOT_NAME} \
+		${E2E_IMAGE_TAG} \
+		pytest .
 
 #######
 # INFRA
