@@ -13,7 +13,7 @@ concurrency:
 
 env:
   BOT_IMAGE_TAG: ${{ secrets.GCP_ARTIFACT_REGISTRY }}/bot/bot:${{ github.ref_name }}-${{ github.sha }}
-  E2E_IMAGE_TAG: bot/e2e:${{ github.ref_name }}-${{ github.sha }}
+  E2E_IMAGE_TAG: ${{ secrets.GCP_ARTIFACT_REGISTRY }}/bot/e2e:${{ github.ref_name }}-${{ github.sha }}
 
 jobs:
   build:
