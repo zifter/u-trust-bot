@@ -52,7 +52,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    needs: bot-push-image
+    needs: build
     environment: ${{ github.ref_type == 'tag' && 'prod' || 'staging' }}
 
     steps:
@@ -81,9 +81,8 @@ jobs:
   e2e:
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    needs: build
+    needs: deploy
     environment: ${{ github.ref_type == 'tag' && 'prod' || 'staging' }}
-
 
     steps:
       - name: Check out repository code
