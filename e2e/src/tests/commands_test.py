@@ -9,10 +9,12 @@ pytestmark = [
 
 
 @pytest.mark.asyncio
-async def test_command_my_lists(conv: Conversation):
+async def test_command_info(conv: Conversation):
     """Test /my_lists bot command."""
     await conv.send_message("/info")
-    user_lists: Message = await conv.get_response()
+    info: Message = await conv.get_response()
 
     # Check that the message contains necessary text
-    assert "Choose list or action" in user_lists.text
+    assert "Joined:" in info.text
+    assert "Total Messages:" in info.text
+    assert "Total VO Duration:" in info.text

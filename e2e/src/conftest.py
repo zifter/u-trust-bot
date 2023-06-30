@@ -37,5 +37,8 @@ async def conv(telegram_client) -> Conversation:
     async with telegram_client.conversation(TEST_BOT_NAME, timeout=10, max_messages=10000) as conv:
         conv: Conversation
         await conv.send_message("/start")
-        welcome_message = await conv.get_response()  # Welcome message
+        _ = await conv.get_response()  # Welcome message
+        await conv.send_message("/auth")
+        await conv.send_message("I-trust-U")
+
         yield conv
