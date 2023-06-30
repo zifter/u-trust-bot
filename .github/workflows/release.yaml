@@ -33,7 +33,7 @@ jobs:
         run: make bot-image-test BOT_IMAGE_TAG=${BOT_IMAGE_TAG}
 
       - name: Build e2e Image
-        run: make bot-image-build E2E_IMAGE_TAG=${E2E_IMAGE_TAG}
+        run: make e2e-image-build E2E_IMAGE_TAG=${E2E_IMAGE_TAG}
 
       - name: Test e2e Image
         run: make e2e-image-test E2E_IMAGE_TAG=${E2E_IMAGE_TAG}
