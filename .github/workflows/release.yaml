@@ -47,7 +47,7 @@ jobs:
         id: bot-push-image
         run: |
           make podman-login GCP_ARTIFACT_REGISTRY=${{ secrets.GCP_ARTIFACT_REGISTRY }}
-          make image-push IMAGE_TAG=${IMAGE_TAG}
+          make bot-image-push BOT_IMAGE_TAG=${BOT_IMAGE_TAG}
 
   deploy:
     runs-on: ubuntu-latest
