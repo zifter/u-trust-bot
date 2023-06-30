@@ -23,6 +23,10 @@ def event_loop():
 @pytest.fixture(scope="session")
 async def telegram_client():
     """Connect to Telegram user for testing."""
+    assert TELEGRAM_APP_SESSION
+    assert TELEGRAM_APP_ID
+    assert TELEGRAM_APP_HASH
+
     async with TelegramClient(StringSession(TELEGRAM_APP_SESSION), TELEGRAM_APP_ID, TELEGRAM_APP_HASH) as client:
         yield client
 
