@@ -43,11 +43,12 @@ jobs:
         with:
           credentials_json: '${{ secrets.GOOGLE_CREDENTIALS }}'
 
-      - name: Push Bot Image
+      - name: Push Images
         id: bot-push-image
         run: |
           make podman-login GCP_ARTIFACT_REGISTRY=${{ secrets.GCP_ARTIFACT_REGISTRY }}
           make bot-image-push BOT_IMAGE_TAG=${BOT_IMAGE_TAG}
+          make e2e-image-push E2E_IMAGE_TAG=${E2E_IMAGE_TAG}
 
   deploy:
     runs-on: ubuntu-latest

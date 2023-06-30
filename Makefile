@@ -36,6 +36,9 @@ bot-image-test:
 e2e-image-build:
 	cd e2e/ && podman build . -t ${E2E_IMAGE_TAG}
 
+e2e-image-push:
+	podman push ${E2E_IMAGE_TAG}
+
 e2e-image-test:
 	podman run ${E2E_IMAGE_TAG} pytest . -m "not e2e"
 
