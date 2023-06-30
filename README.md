@@ -37,3 +37,7 @@ touch .env
 
 ### Python
 https://github.com/googleapis/python-ndb/blob/main/tests/system/test_crud.py
+
+
+### e2e
+* https://shallowdepth.online/posts/2021/12/end-to-end-tests-for-telegram-bots/

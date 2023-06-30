@@ -21,6 +21,9 @@ class CommandStateMixin:
         self.user.command_state.name = ''
         self.user.command_state.state = {}
 
+    def command_name(self) -> str:
+        return self.user.command_state.name
+
     def command_state(self):
         state = self.user.command_state.state
         return state if state else {}

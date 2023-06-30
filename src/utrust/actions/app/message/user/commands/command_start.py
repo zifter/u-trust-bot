@@ -14,5 +14,5 @@ class CommandStart(UserActionBase, CommandStateMixin):
 
     async def do_exec(self):
         self.command_complete()
-
+        self.command_state().name
         return SendTextMessageToUserAction(self.app_context.commander.help_description(), self.user_context)

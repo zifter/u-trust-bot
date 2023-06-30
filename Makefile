@@ -6,8 +6,6 @@ dep-up:
 	pipenv update --dev
 	pipenv clean
 
-
-
 #######
 # LOCAL
 local-test:
@@ -19,17 +17,30 @@ local-test:
 podman-login:
 	gcloud auth print-access-token --quiet | podman login -u oauth2accesstoken --password-stdin ${GCP_ARTIFACT_REGISTRY}
 
-image-build:
-	podman build . -t ${IMAGE_TAG}
+######
+# BOT
+bot-image-build:
+	podman build . -t ${BOT_IMAGE_TAG}
 
-image-push:
-	podman push ${IMAGE_TAG}
+bot-image-push:
+	podman push ${BOT_IMAGE_TAG}
 
-image-run:
-	podman run ${IMAGE_TAG}
+bot-image-run:
+	podman run ${BOT_IMAGE_TAG}
 
-image-test:
-	podman run ${IMAGE_TAG} pytest . --cov=src
+bot-image-test:
+	podman run ${BOT_IMAGE_TAG} pytest . --cov=src
+
+######
+# BOT
+e2e-image-build:
+	cd e2e/ && podman build . -t ${E2E_IMAGE_TAG}
+
+e2e-image-test:
+	podman run ${E2E_IMAGE_TAG} pytest . -m "not e2e"
+
+e2e-image-run:
+	podman run ${E2E_IMAGE_TAG} pytest .
 
 #######
 # INFRA

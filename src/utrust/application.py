@@ -3,6 +3,7 @@ from logging import getLogger
 
 from external.tg.message import Message
 from utrust.actions.app.message.user.commands.command_authorize_user import CommandAuthorizeUser
+from utrust.actions.app.message.user.commands.command_cancel import CommandCancel
 from utrust.actions.app.message.user.commands.command_forget_user import CommandForgetUser
 from utrust.actions.app.message.handle_message import HandleMessageAction
 from utrust.actions.app.message.user.commands.command_start import CommandStart
@@ -25,6 +26,9 @@ class BotApplication:
                 Command(CommandAuthorizeUser),
                 Command(CommandUserInfo),
                 Command(CommandForgetUser),
+            ]),
+            Section('Other', [
+                Command(CommandCancel)
             ]),
         ]
 
