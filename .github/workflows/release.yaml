@@ -92,10 +92,17 @@ jobs:
       - name: 'Prepare Local Workspace'
         run: touch .env
 
+      - name: 'Authenticate to Google Cloud'
+        uses: 'google-github-actions/auth@v1'
+        with:
+          credentials_json: '${{ secrets.GOOGLE_CREDENTIALS }}'
+
       - name: Run e2e
         env:
           TELEGRAM_APP_ID: ${{ secrets.E2E_TELEGRAM_APP_ID }}
           TELEGRAM_APP_HASH: ${{ secrets.E2E_TELEGRAM_APP_HASH }}
           TELEGRAM_APP_SESSION: ${{ secrets.E2E_TELEGRAM_APP_SESSION }}
           UTRUST_BOT_NAME: ${{ secrets.E2E_UTRUST_BOT_NAME }}
-        run: make e2e-image-run E2E_IMAGE_TAG=${E2E_IMAGE_TAG}
+        run: |
+          make podman-login GCP_ARTIFACT_REGISTRY=${{ secrets.GCP_ARTIFACT_REGISTRY }}
+          make e2e-image-run E2E_IMAGE_TAG=${E2E_IMAGE_TAG}
