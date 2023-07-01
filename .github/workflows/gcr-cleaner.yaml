@@ -18,7 +18,7 @@ jobs:
       - name: Login to GAR
         uses: docker/login-action@v2
         with:
-          registry: europe-docker.pkg.dev
+          registry: ${{ secrets.GCP_ARTIFACT_REGISTRY }}
           username: oauth2accesstoken
           password: ${{ steps.auth.outputs.access_token }}
 

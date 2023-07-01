@@ -115,16 +115,18 @@ jobs:
     steps:
       - name: Send Telegram message after pipeline
         uses: appleboy/telegram-action@master
+        env:
+          ENVIRONMENT: ${{ github.ref_type == 'tag' && 'prod' || 'staging' }}
         with:
           to: ${{ secrets.TELEGRAM_CI_CD_CHAT_ID }}
           token: ${{ secrets.TELEGRAM_CI_CD_BOT_TOKEN }}
           format: markdown
           message: |
-            Repository: [${{ github.repository }}](https://github.com/${{ github.repository }})
-            Commit: [${{ github.event.commits[0].message }}](https://github.com/${{ github.repository }}/commit/${{github.sha}})
-            Run: [${{ github.workflow }}](https://github.com/zifter/u-trust-bot/actions/runs/${{ github.run_id }})
-            Environment: ${{ github.ref_type == 'tag' && 'prod' || 'staging' }}
+            *Repository:* [${{ github.repository }}](https://github.com/${{ github.repository }})
+            *Commit:* [${{ github.event.commits[0].message }}](https://github.com/${{ github.repository }}/commit/${{github.sha}})
+            *Workflow:* [${{ github.workflow }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            *Environment:* [$ENVIRONMENT](https://github.com/${{ github.repository }}/deployments/activity_log?environment=$ENVIRONMENT)
 
-            Build - [${{ needs.build.result }}](https://github.com/zifter/u-trust-bot/actions/runs/${{ github.run_id }}/jobs/)
-            Deploy - [${{ needs.deploy.result }}](https://github.com/zifter/u-trust-bot/actions/runs/${{ github.run_id }}/jobs/)
-            e2e - [${{ needs.e2e.result }}](https://github.com/zifter/u-trust-bot/actions/runs/${{ github.run_id }}/jobs/)
+            *Build*  - [${{ needs.build.result }}](https://github.com/zifter/u-trust-bot/actions/runs/${{ github.run_id }}/jobs/)
+            *Deploy* - [${{ needs.deploy.result }}](https://github.com/zifter/u-trust-bot/actions/runs/${{ github.run_id }}/jobs/)
+            *e2e*    - [${{ needs.e2e.result }}](https://github.com/zifter/u-trust-bot/actions/runs/${{ github.run_id }}/jobs/)
