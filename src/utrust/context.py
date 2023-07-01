@@ -26,4 +26,7 @@ class UserContext:
         self.message_context = message_context
 
         self.user = user
+        self.user_delete_request: bool = False
 
+    def request_user_deletion(self):
+        self.user_delete_request = True

@@ -21,13 +21,12 @@ class CommandAuthorizeUser(UserActionBase, CommandStateMixin):
         # TOKEN -> Message
         waiting_token = self.command_state().get('waiting_token', False)
         if waiting_token:
-            self.command_complete()
-
             if self.message.text == 'I-trust-U':
+                self.command_complete()
                 self.user.registration.confirmed = True
                 return SendTextMessageToUserAction('Thanks! You are authorized to work with me', self.user_context)
             else:
-                return SendTextMessageToUserAction(f'Wrong auth token. Sorry, try again with {self.command_name}', self.user_context)
+                return SendTextMessageToUserAction(f'Wrong auth token. Please, send me authorization code', self.user_context)
         else:
             self.set_command_state({'waiting_token': True})
-            return SendTextMessageToUserAction('Please, send me authorization code', self.user_context)
+            return SendTextMessageToUserAction('You are not authorized. Please, send me authorization code', self.user_context)

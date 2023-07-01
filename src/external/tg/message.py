@@ -19,6 +19,13 @@ class Message:
         self.update = update
         self.context = context
 
+    def command_name(self) -> str | None:
+        if self.text and self.text.startswith('/'):
+            args = self.text.split(' ')
+            command_name = args[0][1:]
+            return command_name
+        return None
+
     @property
     def content_type(self) -> MessageContentType:
         if self.update.message.text:

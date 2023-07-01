@@ -13,7 +13,7 @@ class CommandForgetUser(UserActionBase, CommandStateMixin):
         self.permissions = []
 
     async def do_exec(self):
-        self.user_context.user = self.external.db.create_new_user(self.user.telegram_id)
+        self.user_context.request_user_deletion()
         self.command_complete()
 
         return SendTextMessageToUserAction('You account is deleted', self.user_context)

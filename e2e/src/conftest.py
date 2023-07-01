@@ -4,9 +4,8 @@ import pytest
 
 from telethon import TelegramClient
 from telethon.sessions import StringSession
-from telethon.tl.custom import Conversation
 
-from settings import TELEGRAM_APP_SESSION, TELEGRAM_APP_ID, TELEGRAM_APP_HASH, TEST_BOT_NAME
+from settings import TELEGRAM_APP_SESSION, TELEGRAM_APP_ID, TELEGRAM_APP_HASH
 
 
 # Default event_loop fixture has "function" scope and will
@@ -29,22 +28,3 @@ async def telegram_client():
 
     async with TelegramClient(StringSession(TELEGRAM_APP_SESSION), TELEGRAM_APP_ID, TELEGRAM_APP_HASH) as client:
         yield client
-
-
-@pytest.fixture(scope="session")
-async def conv(telegram_client) -> Conversation:
-    """Open conversation with the bot."""
-    async with telegram_client.conversation(TEST_BOT_NAME, timeout=10, max_messages=10000) as conv:
-        conv: Conversation
-        await conv.send_message("/start")
-        _ = await conv.get_response()  # Welcome message
-        await conv.send_message("/auth")
-        auth = await conv.get_response()
-        if 'Please, send me authorization code' in auth.text:
-            await conv.send_message("I-trust-U")
-        elif 'You are already authorized' in auth.text:
-            pass
-        else:
-            assert False, 'Unknown state'
-
-        yield conv

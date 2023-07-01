@@ -52,3 +52,10 @@ class StorageFacade:
 
         with self.client.context():
             user.put()
+
+    def delete_user(self, user: User):
+        logger.info(f'Delete user {user}')
+
+        with self.client.context():
+            user.telegram_id = -1
+            user.put()
