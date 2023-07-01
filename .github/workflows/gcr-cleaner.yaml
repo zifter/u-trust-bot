@@ -9,18 +9,11 @@ jobs:
   gcr-cleaner:
     runs-on: 'ubuntu-latest'
     steps:
-      - name: 'Authenticate to Google Cloud'
-        id: auth
-        uses: 'google-github-actions/auth@v1'
-        with:
-          credentials_json: '${{ secrets.GOOGLE_CREDENTIALS }}'
-
       - name: Login to GAR
         uses: docker/login-action@v2
         with:
-          registry: ${{ secrets.GCP_ARTIFACT_REGISTRY }}
-          username: oauth2accesstoken
-          password: ${{ steps.auth.outputs.access_token }}
+          username: _json_key
+          password: ${{ secrets.GOOGLE_CREDENTIALS }}
 
       # customize based on the gcr-cleaner flags
       - name: clean-bot
