@@ -115,17 +115,16 @@ jobs:
     steps:
       - name: Send Telegram message after pipeline
         uses: appleboy/telegram-action@master
-        env:
-           ENVIRONMENT_NAME: ${{ vars.ENVIRONMENT_STAGE }}
         with:
           to: ${{ secrets.TELEGRAM_CI_CD_CHAT_ID }}
           token: ${{ secrets.TELEGRAM_CI_CD_BOT_TOKEN }}
           format: markdown
           message: |
             Repository: [${{ github.repository }}](https://github.com/${{ github.repository }})
-            Commit message: [${{ github.event.commits[0].message }}](https://github.com/${{ github.repository }}/commit/${{github.sha}})
-            Run: [${{ github.workflow }}](https://github.com/zifter/u-trust-bot/actions/runs/${{ github.workflow_run_id }})
+            Commit: [${{ github.event.commits[0].message }}](https://github.com/${{ github.repository }}/commit/${{github.sha}})
+            Run: [${{ github.workflow }}](https://github.com/zifter/u-trust-bot/actions/runs/${{ github.run_id }})
+            Environment: ${{ jobs.deploy.environment }}
 
-            Build - ${{ needs.build.result }}
-            Deploy - ${{ needs.deploy.result }}
-            e2e - ${{ needs.e2e.result }}
+            Build - [${{ needs.build.result }}](https://github.com/zifter/u-trust-bot/actions/runs/${{ github.run_id }}/jobs/${{ jobs.build.id}})
+            Deploy - [${{ needs.deploy.result }}](https://github.com/zifter/u-trust-bot/actions/runs/${{ github.run_id }}/jobs/${{ jobs.deploy.id}})
+            e2e - [${{ needs.e2e.result }}](https://github.com/zifter/u-trust-bot/actions/runs/${{ github.run_id }}/jobs/${{ jobs.e2e.id}})
