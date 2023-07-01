@@ -110,7 +110,7 @@ jobs:
   notify-pipeline-result:
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    needs: e2ea
+    needs: e2e
     steps:
       - name: Send Telegram message after pipeline
         uses: appleboy/telegram-action@master
