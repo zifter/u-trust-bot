@@ -106,3 +106,16 @@ jobs:
         run: |
           make podman-login GCP_ARTIFACT_REGISTRY=${{ secrets.GCP_ARTIFACT_REGISTRY }}
           make e2e-image-run E2E_IMAGE_TAG=${E2E_IMAGE_TAG}
+
+  notify-pipeline-result:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Send Telegram message after pipeline
+        uses: appleboy/telegram-action@v3
+        env:
+           ENVIRONMENT_NAME: ${{ vars.ENVIRONMENT_STAGE }}
+        with:
+          to: ${{ secrets.TELEGRAM_CI_CD_CHAT_ID }}
+          token: ${{ secrets.TELEGRAM_CI_CD_BOT_TOKEN }}
+          message: "$GITHUB_REPOSITORY, $GITHUB_WORKFLOW\n$ENVIRONMENT_NAME - Pipeline finished!"
