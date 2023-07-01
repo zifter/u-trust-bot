@@ -29,7 +29,7 @@ ENV PATH=/root/.local/bin:$PATH
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY src src
-COPY shared_lib e2e/src
+COPY shared_lib src/
 
 WORKDIR /app/src
 
