@@ -21,11 +21,17 @@ jobs:
           --password-stdin https://europe-central2-docker.pkg.dev
 
       - name: clean-e2e
-        uses: 'docker://europe-docker.pkg.dev/gcr-cleaner/gcr-cleaner/gcr-cleaner'
-        env:
-          GCRCLEANER_LOG: debug
+        uses: 'docker://europe-docker.pkg.dev/gcr-cleaner/gcr-cleaner/gcr-cleaner-cli'
+        with:
+          args: >-
+            -repo=${{ secrets.GCP_ARTIFACT_REGISTRY }}/bot/bot
+            -grace=5m
+            -tag-filter-any="main*"
+            -keep=1
+
+      - name: clean-bot
+        uses: 'docker://europe-docker.pkg.dev/gcr-cleaner/gcr-cleaner/gcr-cleaner-cli'
         with:
           args: >-
             -repo=${{ secrets.GCP_ARTIFACT_REGISTRY }}/bot/e2e
-            -recursive
-            -grace=1h
+            -grace=5m
