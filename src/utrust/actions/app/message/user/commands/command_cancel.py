@@ -1,3 +1,4 @@
+from shared.texts import TEXT_NO_ACTIVE_COMMAND, FORMAT_COMMAND_HAS_BEEN_CANCELLED
 from utrust.actions.app.message.base import CommandStateMixin
 from utrust.actions.app.message.user.base import UserActionBase
 from utrust.actions.app.message.user.send_text_message_to_user import SendTextMessageToUserAction
@@ -15,10 +16,7 @@ class CommandCancel(UserActionBase, CommandStateMixin):
     async def do_exec(self):
         current_command = self.command_name()
         if current_command == '':
-            txt = "No active command to cancel. I wasn't doing anything anyway. Zzzzz..."
-            return SendTextMessageToUserAction(txt, self.user_context)
+            return SendTextMessageToUserAction(TEXT_NO_ACTIVE_COMMAND, self.user_context)
         else:
-            txt = f"The command {current_command} has been cancelled. Anything else I can do for you?\n\n" \
-                  "Send /help for a list of commands. "
             self.command_complete()
-            return SendTextMessageToUserAction(txt, self.user_context)
+            return SendTextMessageToUserAction(FORMAT_COMMAND_HAS_BEEN_CANCELLED(current_command), self.user_context)

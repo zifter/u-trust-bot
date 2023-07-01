@@ -1,3 +1,4 @@
+from shared.texts import TEXT_YOU_ACCOUNT_IS_DELETED
 from utrust.actions.app.message.base import CommandStateMixin
 from utrust.actions.app.message.user.base import UserActionBase
 from utrust.actions.app.message.user.send_text_message_to_user import SendTextMessageToUserAction
@@ -16,4 +17,4 @@ class CommandForgetUser(UserActionBase, CommandStateMixin):
         self.user_context.request_user_deletion()
         self.command_complete()
 
-        return SendTextMessageToUserAction('You account is deleted', self.user_context)
+        return SendTextMessageToUserAction(TEXT_YOU_ACCOUNT_IS_DELETED, self.user_context)

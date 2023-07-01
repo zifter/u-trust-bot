@@ -20,7 +20,7 @@ podman-login:
 ######
 # BOT
 bot-image-build:
-	podman build . -t ${BOT_IMAGE_TAG}
+	podman build -f Containerfile.bot . -t ${BOT_IMAGE_TAG}
 
 bot-image-push:
 	podman push ${BOT_IMAGE_TAG}
@@ -34,7 +34,7 @@ bot-image-test:
 ######
 # BOT
 e2e-image-build:
-	cd e2e/ && podman build . -t ${E2E_IMAGE_TAG}
+	podman build -f Containerfile.e2e . -t ${E2E_IMAGE_TAG}
 
 e2e-image-push:
 	podman push ${E2E_IMAGE_TAG}

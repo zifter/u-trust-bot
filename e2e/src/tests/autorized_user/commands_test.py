@@ -14,4 +14,4 @@ async def test_send_voice_message(user: UTrustUser):
 
     assert "Joined:" in resp.text
     assert "Total Messages:" in resp.text
-    assert "Total VO Duration:" in resp.text
+    assert "Total Transcription Duration:" in resp.text

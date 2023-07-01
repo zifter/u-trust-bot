@@ -14,7 +14,7 @@ FROM python:3.11.4-slim-buster
 
 WORKDIR /app
 
-COPY requirements.txt requirements.txt
+COPY e2e/requirements.txt requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
 # set environment variables
@@ -25,8 +25,9 @@ ENV PATH=/root/.local/bin:$PATH
 # copy project
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY . .
+COPY e2e e2e
+COPY shared_lib e2e/src
 
-WORKDIR /app/src
+WORKDIR /app/e2e/src
 
 CMD ["pytest"]

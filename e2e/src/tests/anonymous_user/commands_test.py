@@ -1,6 +1,6 @@
 import pytest
-from telegram import Message
 
+from shared.texts import TEXT_YOU_ARE_NOT_AUTHORIZED
 from utrustuser import UTrustUser
 
 pytestmark = [
@@ -11,4 +11,4 @@ pytestmark = [
 
 async def test_anonymous_command_info(user: UTrustUser):
     resp = await user.command_info()
-    assert resp.text == UTrustUser.YOU_ARE_NOT_AUTHORIZED_TEXT
+    assert resp.text == TEXT_YOU_ARE_NOT_AUTHORIZED

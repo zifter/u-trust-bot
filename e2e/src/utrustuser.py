@@ -3,10 +3,11 @@ import asyncio
 from telegram import Message
 from telethon.tl.custom import Conversation
 
+from shared.texts import AUTHORIZATION_TOKEN, TEXT_YOU_ARE_ALREADY_AUTHORIZED, TEXT_YOU_ARE_NOT_AUTHORIZED
+
 
 class UTrustUser:
     YOU_ACCOUNT_IS_DELETED_TEXT = 'You account is deleted'
-    AUTHORIZATION_TOKEN = 'I-trust-U'
 
     YOU_ARE_NOT_AUTHORIZED_TEXT = 'You are not authorized. Please, send me authorization code'
     YOU_ARE_ALREADY_AUTHORIZED_TEXT = 'You are already authorized'
@@ -22,9 +23,9 @@ class UTrustUser:
         _ = await self.command_cancel()
         resp = await self.command_auth()
 
-        if resp.text == UTrustUser.YOU_ARE_NOT_AUTHORIZED_TEXT:
-            await self.send_text_message_ang_get_response(UTrustUser.AUTHORIZATION_TOKEN)
-        elif resp.text == UTrustUser.YOU_ARE_ALREADY_AUTHORIZED_TEXT:
+        if resp.text == TEXT_YOU_ARE_NOT_AUTHORIZED:
+            await self.send_text_message_ang_get_response(AUTHORIZATION_TOKEN)
+        elif resp.text == TEXT_YOU_ARE_ALREADY_AUTHORIZED:
             pass
         else:
             assert False, f'Unknown state: {resp.text}'
@@ -62,10 +63,3 @@ class UTrustUser:
 
     def is_info_text(self, text) -> bool:
         return "Joined:" in text
-
-    def is_not_autorized_text(self, text) -> bool:
-        return text == UTrustUser.YOU_ARE_NOT_AUTHORIZED_TEXT
-
-    def is_canceled_text(self, text, command) -> bool:
-        return text == f'The command {command} has been cancelled. Anything else I can do for you?\n\n' \
-                       f'Send /help for a list of commands.'

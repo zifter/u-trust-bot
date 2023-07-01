@@ -15,8 +15,8 @@ class CommandUserInfo(UserActionBase, CommandStateMixin):
         self.command_complete()
 
         message = \
-            f'Joined:  {self.user.registration.created_at.strftime("%H:%M, %A, %B %d, %Y")}\n' \
-            f'Total Messages:  {self.user.analytics.processed_messages}\n' \
-            f'Total VO Duration:  {format_duration(self.user.analytics.vo_total_seconds)}\n'
+            f'Joined: {self.user.registration.created_at.strftime("%H:%M, %A, %B %d, %Y")}\n' \
+            f'Total Messages: {self.user.analytics.processed_messages}\n' \
+            f'Total Transcription Duration: {format_duration(self.user.analytics.vo_total_seconds)}\n'
 
         return SendTextMessageToUserAction(message, self.user_context)

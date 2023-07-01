@@ -1,4 +1,6 @@
 *
 !Pipfile
 !Pipfile.lock
+!shared_lib/
 !src/
+!e2e/

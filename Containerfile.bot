@@ -28,7 +28,8 @@ ENV PATH=/root/.local/bin:$PATH
 # copy project
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY . .
+COPY src src
+COPY shared_lib e2e/src
 
 WORKDIR /app/src
 
