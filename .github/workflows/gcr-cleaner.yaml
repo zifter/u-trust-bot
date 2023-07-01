@@ -8,6 +8,7 @@ on:
 jobs:
   gcr-cleaner:
     runs-on: 'ubuntu-latest'
+    timeout-minutes: 5
     steps:
       - name: 'Authenticate to Google Cloud'
         uses: 'google-github-actions/auth@v1'
@@ -26,6 +27,7 @@ jobs:
           args: >-
             -repo=${{ secrets.GCP_ARTIFACT_REGISTRY }}/bot/bot
             -grace=5m
+            -tag-filter-any "v^(\d+).(\d+).(\d+)$"
             -tag-filter-any="main*"
             -keep=1
 
@@ -34,4 +36,5 @@ jobs:
         with:
           args: >-
             -repo=${{ secrets.GCP_ARTIFACT_REGISTRY }}/bot/e2e
-            -grace=5m
+            -grace=10m
+            -tag-filter-any=".*"
