@@ -1,0 +1,32 @@
+name: gcr-cleaner
+
+on:
+  schedule:
+    - cron: '0 0 */1 * *' # runs daily
+  workflow_dispatch: # allows for manual invocation
+
+jobs:
+  gcr-cleaner:
+    runs-on: 'ubuntu-latest'
+    steps:
+      - name: 'Authenticate to Google Cloud'
+        id: auth
+        uses: 'google-github-actions/auth@v1'
+        with:
+          credentials_json: '${{ secrets.GOOGLE_CREDENTIALS }}'
+
+      - name: Login to GAR
+        uses: docker/login-action@v2
+        with:
+          registry: europe-docker.pkg.dev
+          username: oauth2accesstoken
+          password: ${{ steps.auth.outputs.access_token }}
+
+      # customize based on the gcr-cleaner flags
+      - name: clean-bot
+        uses: 'docker://europe-docker.pkg.dev/gcr-cleaner/gcr-cleaner/gcr-cleaner'
+        with:
+          args: >-
+            -repo=${{ secrets.GCP_ARTIFACT_REGISTRY }}/e2e
+            -recursive
+            -grace=1h

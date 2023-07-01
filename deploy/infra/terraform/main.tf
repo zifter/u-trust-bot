@@ -38,11 +38,6 @@ resource "google_project_service" "firestore" {
   service = "firestore.googleapis.com"
   disable_on_destroy = false
 }
-#
-#resource "google_app_engine_application" "app" {
-#  project     = var.gcp_project_name
-#  location_id = var.gcp_region
-#}
 
 resource "google_artifact_registry_repository" "artifact_registry" {
   provider = google-beta
