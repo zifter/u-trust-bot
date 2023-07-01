@@ -14,17 +14,18 @@ jobs:
         with:
           credentials_json: '${{ secrets.GOOGLE_CREDENTIALS }}'
 
-      - name: 'Authenticate to Google Cloud'
+      - name: 'Authenticate to Docker'
         run: |
           gcloud auth print-access-token | docker login \
           -u oauth2accesstoken \
           --password-stdin https://europe-central2-docker.pkg.dev
 
-      # customize based on the gcr-cleaner flags
-      - name: clean-bot
+      - name: clean-e2e
         uses: 'docker://europe-docker.pkg.dev/gcr-cleaner/gcr-cleaner/gcr-cleaner'
+        env:
+          GCRCLEANER_LOG: debug
         with:
           args: >-
-            -repo=${{ secrets.GCP_ARTIFACT_REGISTRY }}/e2e
+            -repo=${{ secrets.GCP_ARTIFACT_REGISTRY }}/bot/e2e
             -recursive
             -grace=1h
