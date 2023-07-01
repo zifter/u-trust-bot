@@ -123,8 +123,8 @@ jobs:
             Repository: [${{ github.repository }}](https://github.com/${{ github.repository }})
             Commit: [${{ github.event.commits[0].message }}](https://github.com/${{ github.repository }}/commit/${{github.sha}})
             Run: [${{ github.workflow }}](https://github.com/zifter/u-trust-bot/actions/runs/${{ github.run_id }})
-            Environment: ${{ jobs.deploy.environment }}
+            Environment: ${{ needs.deploy.environment }}
 
-            Build - [${{ needs.build.result }}](https://github.com/zifter/u-trust-bot/actions/runs/${{ github.run_id }}/jobs/${{ jobs.build.id}})
-            Deploy - [${{ needs.deploy.result }}](https://github.com/zifter/u-trust-bot/actions/runs/${{ github.run_id }}/jobs/${{ jobs.deploy.id}})
-            e2e - [${{ needs.e2e.result }}](https://github.com/zifter/u-trust-bot/actions/runs/${{ github.run_id }}/jobs/${{ jobs.e2e.id}})
+            Build - [${{ needs.build.result }}](https://github.com/zifter/u-trust-bot/actions/runs/${{ github.run_id }}/jobs/${{ needs.build.id}})
+            Deploy - [${{ needs.deploy.result }}](https://github.com/zifter/u-trust-bot/actions/runs/${{ github.run_id }}/jobs/${{ needs.deploy.id}})
+            e2e - [${{ needs.e2e.result }}](https://github.com/zifter/u-trust-bot/actions/runs/${{ github.run_id }}/jobs/${{ needs.e2e.id}})
