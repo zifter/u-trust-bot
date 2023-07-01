@@ -110,7 +110,8 @@ jobs:
   notify-pipeline-result:
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    needs: e2e
+    needs: [build,deploy,e2e]
+    if: always()
     steps:
       - name: Send Telegram message after pipeline
         uses: appleboy/telegram-action@master
@@ -120,9 +121,10 @@ jobs:
           to: ${{ secrets.TELEGRAM_CI_CD_CHAT_ID }}
           token: ${{ secrets.TELEGRAM_CI_CD_BOT_TOKEN }}
           message: |
-            ${{ github.actor }} created commit:
-            Commit message: ${{ github.event.commits[0].message }}
-            
             Repository: ${{ github.repository }}
-            
+            Commit message: ${{ github.event.commits[0].message }}
             See changes: https://github.com/${{ github.repository }}/commit/${{github.sha}}
+
+            Build - ${{ needs.build.result }}
+            Deploy - ${{ needs.deploy.result }}
+            e2e - ${{ needs.e2e.result }}
