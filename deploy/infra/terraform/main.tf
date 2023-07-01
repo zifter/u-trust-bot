@@ -100,6 +100,15 @@ resource "google_project_iam_binding" "iam_deployer_datastore" {
   ]
 }
 
+resource "google_project_iam_binding" "iam_deployer_artifact_registry" {
+  project = "${var.gcp_project_name}"
+  role    = "roles/artifactregistry.repoAdmin"
+
+  members = [
+   "serviceAccount:${google_service_account.deployer.email}",
+  ]
+}
+
 resource "google_service_account_key" "deployer_key" {
   service_account_id = google_service_account.deployer.name
 

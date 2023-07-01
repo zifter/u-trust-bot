@@ -109,7 +109,7 @@ jobs:
 
   notify-pipeline-result:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
     needs: [build,deploy,e2e]
     if: always()
     steps:
