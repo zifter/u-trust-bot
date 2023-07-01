@@ -110,12 +110,19 @@ jobs:
   notify-pipeline-result:
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    needs: e2ea
     steps:
       - name: Send Telegram message after pipeline
-        uses: appleboy/telegram-action@v3
+        uses: appleboy/telegram-action@master
         env:
            ENVIRONMENT_NAME: ${{ vars.ENVIRONMENT_STAGE }}
         with:
           to: ${{ secrets.TELEGRAM_CI_CD_CHAT_ID }}
           token: ${{ secrets.TELEGRAM_CI_CD_BOT_TOKEN }}
-          message: "$GITHUB_REPOSITORY, $GITHUB_WORKFLOW\n$ENVIRONMENT_NAME - Pipeline finished!"
+          message: |
+            ${{ github.actor }} created commit:
+            Commit message: ${{ github.event.commits[0].message }}
+            
+            Repository: ${{ github.repository }}
+            
+            See changes: https://github.com/${{ github.repository }}/commit/${{github.sha}}
