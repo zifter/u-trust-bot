@@ -16,8 +16,7 @@ jobs:
 
       - name: 'Authenticate to Google Cloud'
         run: |
-          gcloud auth print-access-token \
-          --impersonate-service-account ACCOUNT | docker login \
+          gcloud auth print-access-token | docker login \
           -u oauth2accesstoken \
           --password-stdin https://europe-central2-docker.pkg.dev
 
