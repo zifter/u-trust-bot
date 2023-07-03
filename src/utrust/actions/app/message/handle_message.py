@@ -1,10 +1,9 @@
 from typing import Optional
 
-from external.db.models import User
 from external.tg.message import MessageContentType
-from utrust.actions import logger
 from utrust.actions.app.message.user.base import MessageActionBase
 from utrust.actions.app.message.user.commands.command_cancel import CommandCancel
+from utrust.actions.app.message.user.send_text_message_to_user import SendTextMessageToUserAction
 from utrust.actions.permissions import Permission
 from utrust.actions.app.message.user.speech_to_text import SpeechToTextAction
 from utrust.context import UserContext
@@ -42,15 +41,18 @@ class HandleMessageAction(MessageActionBase):
             self.external.db.save_user(self._user_context.user)
 
     def get_next_action(self, user_context: UserContext):
+        # Process all cancel requests firstly
         command_name = self.message.command_name()
         if command_name and command_name == CommandCancel.COMMAND_NAME:
             action = self.app_context.commander.get_action_class(command_name)
             return action(user_context)
 
+        # Try to restore processing command that was running earlier
         if user_context.user.command_state.name:
             action = self.app_context.commander.get_action_class(user_context.user.command_state.name)
             return action(user_context)
 
+        # Start handling new command request
         if self.message.content_type == MessageContentType.COMMAND:
             args = self.message.text.split(' ')
             command_name = args[0][1:]

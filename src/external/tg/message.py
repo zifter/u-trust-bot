@@ -4,6 +4,8 @@ from enum import Enum
 from telegram import Update
 from telegram.ext import ContextTypes
 
+from external.tg.callback_data import CallbackData
+
 logger = logging.getLogger('telegram')
 
 
@@ -54,3 +56,24 @@ class Message:
     def vo_duration(self) -> int:
         return self.update.message.voice.duration
 
+
+class CallbackQuery:
+    def __init__(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        self.update = update
+        self.context = context
+
+    @property
+    def callback_data(self) -> CallbackData:
+        return CallbackData.deserialize(self.update.callback_query.data)
+
+    @property
+    def telegram_id(self):
+        return self.update.callback_query.from_user.id
+
+    @property
+    def chat_id(self) -> int:
+        return self.update.effective_message.chat_id
+
+    @property
+    def message_id(self) -> int:
+        return self.update.effective_message.id

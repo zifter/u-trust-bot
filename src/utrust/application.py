@@ -1,7 +1,7 @@
 import asyncio
 from logging import getLogger
 
-from external.tg.message import Message
+from external.tg.message import Message, CallbackQuery
 from utrust.actions.app.message.user.commands.command_authorize_user import CommandAuthorizeUser
 from utrust.actions.app.message.user.commands.command_cancel import CommandCancel
 from utrust.actions.app.message.user.commands.command_forget_user import CommandForgetUser
@@ -37,6 +37,7 @@ class BotApplication:
         self.app_context = AppContext(external, commander)
 
         self.app_context.external.tg.add_message_processor(self.process_message)
+        self.app_context.external.tg.add_callback_processor(self.process_callback)
 
     def app_migrate(self):
         migrator = AppMigrator()
@@ -60,3 +61,8 @@ class BotApplication:
             await cmd.exec()
         except Exception as e:
             logger.exception(e)
+
+    async def process_callback(self, callback: CallbackQuery):
+        assert callback.callback_data.name == 'complete_task'
+
+        await self.app_context.external.tg.delete_message(callback.chat_id, callback.message_id)
