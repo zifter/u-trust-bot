@@ -1,6 +1,3 @@
-import pickle
-from dataclasses import dataclass
-
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 
 from external.tg.callback_data import CallbackData
@@ -15,7 +12,7 @@ class DetermineUserTextRequestAction(UserActionBase):
         self.text = text
 
     async def do_exec(self):
-        callback_data = CallbackData('complete_task', {})
+        callback_data = CallbackData('complete_task', {'initial_message_id': self.message.message_id})
 
         button = InlineKeyboardButton("Complete", callback_data=callback_data.serialize())
         reply_markup = InlineKeyboardMarkup([[button]])

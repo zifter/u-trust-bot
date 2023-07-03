@@ -66,3 +66,4 @@ class BotApplication:
         assert callback.callback_data.name == 'complete_task'
 
         await self.app_context.external.tg.delete_message(callback.chat_id, callback.message_id)
+        await self.app_context.external.tg.delete_message(callback.chat_id, callback.callback_data.data['initial_message_id'])

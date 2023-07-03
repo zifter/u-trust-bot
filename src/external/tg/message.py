@@ -45,6 +45,10 @@ class Message:
         return self.update.message.text
 
     @property
+    def message_id(self) -> int:
+        return self.update.message.id
+
+    @property
     def telegram_id(self):
         return self.update.message.from_user.id
 
