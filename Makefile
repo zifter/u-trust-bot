@@ -6,6 +6,10 @@ dep-up:
 	pipenv update --dev
 	pipenv clean
 
+gcp-auth:
+	gcloud config configurations activate personal
+	gcloud auth application-default login
+
 #######
 # LOCAL
 local-test:
