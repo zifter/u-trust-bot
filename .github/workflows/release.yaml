@@ -123,7 +123,7 @@ jobs:
             *Repository:* [${{ github.repository }}](https://github.com/${{ github.repository }})
             *Commit:* [${{ github.event.commits[0].message }}](https://github.com/${{ github.repository }}/commit/${{github.sha}})
             *Workflow:* [${{ github.workflow }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
-            *Environment:* [${{ github.ref_type == 'tag' && 'prod' || 'staging' }}](https://github.com/${{ github.repository }}/deployments/activity_log?environment=${{ github.ref_type == 'tag' && 'prod' || 'staging' }})
+            *Environment:* [${{ github.ref_type == 'tag' && 'prod' || 'staging' }}](https://github.com/${{ github.repository }}/deployments/${{ github.ref_type == 'tag' && 'prod' || 'staging' }})
 
             *Build*  - [${{ needs.build.result }}](https://github.com/zifter/u-trust-bot/actions/runs/${{ github.run_id }}/jobs/)
             *Deploy* - [${{ needs.deploy.result }}](https://github.com/zifter/u-trust-bot/actions/runs/${{ github.run_id }}/jobs/)

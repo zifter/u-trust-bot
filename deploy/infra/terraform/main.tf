@@ -42,11 +42,38 @@ resource "google_project_service" "firestore" {
 resource "google_artifact_registry_repository" "artifact_registry" {
   provider = google-beta
 
-  project = var.gcp_project_name
+  project       = var.gcp_project_name
   location      = var.gcp_region
   repository_id = "u-trust-cr"
   description   = "Container Registry"
   format        = "DOCKER"
+  cleanup_policy_dry_run = true
+  cleanup_policies {
+    id     = "keep-release-and-main"
+    action = "KEEP"
+    condition {
+      tag_state   = "TAGGED"
+      tag_prefixes = ["main"]
+      version_name_prefixes = ["v0"]
+      newer_than   = "7776000s" # days
+    }
+  }
+  cleanup_policies {
+    id     = "keep-latest-packages"
+    action = "KEEP"
+    condition {
+      tag_state    = "TAGGED"
+      newer_than   = "720s" # hours
+    }
+  }
+  cleanup_policies {
+    id     = "delete-old-packages"
+    action = "DELETE"
+    condition {
+      tag_state    = "TAGGED"
+      older_than   = "720s"
+    }
+  }
 
   depends_on = [
     google_project_service.artifactregistry_api,
