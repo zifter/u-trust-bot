@@ -49,21 +49,31 @@ resource "google_artifact_registry_repository" "artifact_registry" {
   format        = "DOCKER"
   cleanup_policy_dry_run = true
   cleanup_policies {
-    id     = "keep-release-and-main"
+    id     = "keep-release-for-90-days"
     action = "KEEP"
     condition {
       tag_state   = "TAGGED"
       tag_prefixes = ["main"]
       version_name_prefixes = ["v0"]
-      newer_than   = "7776000s" # days
+      newer_than   = "7776000s" # 90 days
     }
   }
   cleanup_policies {
-    id     = "keep-latest-packages"
+    id     = "keep-main-for-one-day"
+    action = "KEEP"
+    condition {
+      tag_state   = "TAGGED"
+      tag_prefixes = ["main"]
+      version_name_prefixes = ["v0"]
+      newer_than   = "86400s" # 1 day
+    }
+  }
+  cleanup_policies {
+    id     = "keep-latest-packages-for-2-hours"
     action = "KEEP"
     condition {
       tag_state    = "TAGGED"
-      newer_than   = "720s" # hours
+      newer_than   = "720s" #
     }
   }
   cleanup_policies {
