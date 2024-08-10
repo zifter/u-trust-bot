@@ -12,6 +12,7 @@ google-cloud-speech='==2.20.0'
 google-cloud-datastore='==2.15.2'
 google-cloud-ndb='==2.1.1'
 python-telegram-bot={extras=["webhooks"], version='==20.3'}
+six='==1.16.0'
 
 [dev-packages]
 pytest='==7.2.1'
