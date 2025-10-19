@@ -1,4 +1,5 @@
 import pytest
+import pytest_asyncio
 
 from shared.texts import TEXT_YOU_ARE_NOT_AUTHORIZED, AUTHORIZATION_TOKEN, TEXT_THANKS_YOU_ARE_NOW_AUTHORIZED, \
     TEXT_YOU_ACCOUNT_IS_DELETED, TEXT_WRONG_AUTH_TOKEN, FORMAT_COMMAND_HAS_BEEN_CANCELLED
@@ -10,6 +11,7 @@ pytestmark = [
 ]
 
 
+@pytest.mark.asyncio(loop_scope="session")
 async def test_command_auth(user: UTrustUser):
     resp = await user.command_auth()
 
@@ -25,6 +27,7 @@ async def test_command_auth(user: UTrustUser):
     assert resp.text == TEXT_THANKS_YOU_ARE_NOW_AUTHORIZED
 
 
+@pytest.mark.asyncio(loop_scope="session")
 async def test_command_auth_cancel(user: UTrustUser):
     resp = await user.command_auth()
 
@@ -37,6 +40,7 @@ async def test_command_auth_cancel(user: UTrustUser):
     assert resp.text == TEXT_YOU_ARE_NOT_AUTHORIZED
 
 
+@pytest.mark.asyncio(loop_scope="session")
 async def test_command_forget_me(user: UTrustUser):
     resp = await user.command_auth()
     assert resp.text == TEXT_YOU_ARE_NOT_AUTHORIZED

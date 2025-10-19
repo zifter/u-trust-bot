@@ -9,6 +9,7 @@ pytestmark = [
 ]
 
 
+@pytest.mark.asyncio(loop_scope="session")
 async def test_anonymous_command_info(user: UTrustUser):
     resp = await user.command_info()
     assert resp.text == TEXT_YOU_ARE_NOT_AUTHORIZED

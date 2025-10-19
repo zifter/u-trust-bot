@@ -1,4 +1,5 @@
 import pytest
+import pytest_asyncio
 from telegram import Message
 
 from utrustuser import UTrustUser
@@ -9,6 +10,7 @@ pytestmark = [
 ]
 
 
+@pytest.mark.asyncio(loop_scope="session")
 async def test_send_voice_message(user: UTrustUser):
     resp: Message = await user.command_info()
 
