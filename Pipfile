@@ -4,7 +4,7 @@ verify_ssl = true
 name = 'pypi'
 
 [requires]
-python_version = '3.13  '
+python_version = '3.13'
 
 [packages]
 google-cloud-storage='==3.4.1'

@@ -1,4 +1,4 @@
-FROM python:3.13.9-slim-buster as build
+FROM python:3.13.9-slim as build
 
 # set environment variables
 ENV PATH=/root/.local/bin:$PATH
@@ -15,7 +15,7 @@ COPY Pipfile Pipfile.lock .
 RUN pipenv requirements --dev > requirements.txt
 
 # copy to a fresh image for reduced size
-FROM python:3.13.9-slim-buster
+FROM python:3.13.9-slim
 
 WORKDIR /app
 COPY --from=build /app/requirements.txt /app/requirements.txt
