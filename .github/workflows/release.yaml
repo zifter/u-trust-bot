@@ -64,6 +64,11 @@ jobs:
       - name: 'Prepare Local Workspace'
         run: touch .env
 
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.5.0"
+
       - name: 'Authenticate to Google Cloud'
         id: 'auth'
         uses: 'google-github-actions/auth@v1'
