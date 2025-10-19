@@ -4,20 +4,17 @@ verify_ssl = true
 name = 'pypi'
 
 [requires]
-python_version = '3.11'
+python_version = '3.13  '
 
 [packages]
-google-cloud-storage='==2.9.0'
-google-cloud-speech='==2.20.0'
-google-cloud-datastore='==2.15.2'
-google-cloud-ndb='==2.1.1'
-python-telegram-bot={extras=["webhooks"], version='==20.3'}
-six='==1.16.0'
+google-cloud-storage='==3.4.1'
+google-cloud-speech='==2.33.0'
+google-cloud-datastore='==2.21.0'
+google-cloud-ndb='==2.3.4'
+python-telegram-bot={extras=["webhooks"], version='==22.5'}
+six='==1.17.0'
 
 [dev-packages]
-pytest='==7.2.1'
-pytest-cov='==4.1.0'
-pytest-asyncio='==0.21.0'
-parameterized="==0.8.1"
-
-[scripts]
+pytest='==8.4.2'
+pytest-cov='==7.0.0'
+pytest-asyncio='==1.2.0'

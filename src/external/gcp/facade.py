@@ -31,6 +31,7 @@ class GCPFacade:
             model="default",
             audio_channel_count=1,
             enable_word_time_offsets=True,
+            enable_automatic_punctuation=True,
         )
 
         # Detects speech in the audio file

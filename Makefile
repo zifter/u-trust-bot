@@ -2,6 +2,7 @@ include .env
 
 .EXPORT_ALL_VARIABLES:
 
+.PHONY: gcp-auth local-test podman-login bot-image-build bot-image-push bot-image-run bot-image-test e2e-image-build e2e-image-push e2e-image-run e2e-image-test infra-tf-init infra-tf-init-upgrade infra-tf-plan infra-tf-apply infra-tf-destroy app-tf-init app-tf-init-upgrade app-tf-plan app-tf-apply app-tf-destroy
 dep-up:
 	pipenv update --dev
 	pipenv clean

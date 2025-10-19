@@ -1,5 +1,7 @@
 # Created by https://www.toptal.com/developers/gitignore/api/terraform,python,pycharm
 # Edit at https://www.toptal.com/developers/gitignore?templates=terraform,python,pycharm
+# IntelliJ IDEA
+.idea
 
 ### PyCharm ###
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio, WebStorm and Rider
