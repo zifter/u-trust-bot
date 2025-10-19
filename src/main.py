@@ -11,9 +11,11 @@ from external.tg.facade import TelegramFacade
 from external import ExternalAPI
 
 from utrust.application import BotApplication
+from utils.logger import setup_json_logger
 
 
-logger = logging.getLogger('u-trust-bot')
+# Настраиваем JSON-логгер при импорте модуля
+logger = setup_json_logger('u-trust-bot')
 
 
 def env_var(env, default=None, prefix='UTRUST_'):
